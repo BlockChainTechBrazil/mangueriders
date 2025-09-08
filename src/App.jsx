@@ -19,6 +19,7 @@ import MultiplayerPage from "./pages/MultiplayerPage";
 import GamePageMultiplayer from "./pages/GamePageMultiplayer.tsx";
 import SobrePage from "./pages/SobrePage";
 import { useWallet } from "./context/WalletContext";
+import Footer from "./components/Footer";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +57,7 @@ function App() {
                   <Route path="/gaya1" element={<NewGayaLandingPage />} />
                   <Route path="/gaya2" element={<GayaLandingPage />} />
                 </Routes>
+              <Footer />
               </div>
             </div>
           </WalletProvider>

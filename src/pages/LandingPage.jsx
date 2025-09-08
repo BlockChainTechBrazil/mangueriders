@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import '../styles/header.css';
+
+import Footer from '../components/Footer.jsx';
 
 function LandingPage() {
   const location = useLocation();
@@ -189,90 +190,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Seção Limpeza Ambiental */}
-      <section
-        ref={setRef('limpeza')}
-        id="limpeza"
-        className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black"
-      >
-        <div className="max-w-6xl mx-auto text-center">
-          <div className={`transition-all duration-1000 ${isVisible('limpeza') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-            }`}>
-            <h2 className="text-5xl font-bold mb-12 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              LIMPEZA AMBIENTAL
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { icon: '�️', title: 'Coleta de Lixo', desc: 'Use aspirador ou rede para coletar latinhas, garrafas e lixo tóxico. Ganhe CrabCoin por cada item.', color: 'green', animation: 'animate-bounce' },
-                { icon: '🦀', title: 'Encontro com Crabs', desc: 'Descubra crabs raros escondidos no mangue. Cada um dá recompensas especiais em moedas.', color: 'blue', animation: 'animate-pulse' },
-                { icon: '🌿', title: 'Preservação', desc: 'Restaure o ecossistema de Recife. Cada área limpa desbloqueia novos desafios ambientais.', color: 'teal', animation: 'animate-spin' }
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  className={`bg-gradient-to-br from-${item.color}-500/20 to-${item.color === 'green' ? 'emerald' : item.color === 'blue' ? 'cyan' : 'blue'}-500/20 p-8 rounded-xl border border-${item.color}-500/30 transform hover:scale-105 transition-all duration-500 hover:rotate-1`}
-                  style={{ animationDelay: `${index * 0.2}s` }}
-                >
-                  <div className={`text-6xl mb-4 ${item.animation}`}>{item.icon}</div>
-                  <h3 className={`text-2xl font-bold mb-4 text-${item.color}-400`}>{item.title}</h3>
-                  <p className="text-gray-300">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Seção Crabs do Mangue */}
-      <section
-        ref={setRef('crabs')}
-        id="crabs"
-        className="py-20 px-4"
-      >
-        <div className="max-w-6xl mx-auto text-center">
-          <div className={`transition-all duration-1000 ${isVisible('crabs') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-            }`}>
-            <h2 className="text-5xl font-bold mb-12 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              MANGUE RIDERS
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <div className="bg-green-400 text-black p-6 rounded-3xl border-4 border-green-600 shadow-2xl transform hover:scale-105 transition-all duration-300">
-                  <p className="text-lg font-bold">
-                    "CRABS MÁGICOS, GUARDIÕES DO MANGUEZAL DE RECIFE."
-                  </p>
-                </div>
-
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  Criaturas especiais encontradas no mangue. Cada crab possui habilidades únicas e recompensas em CrabCoin,
-                  ajudando Manguito na missão de limpeza e preservação ambiental. Descubra os guardiões míticos de Recife!
-                </p>
-              </div>
-
-              <div className={`grid grid-cols-2 gap-4 transition-all duration-1000 delay-500 ${isVisible('crabs') ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-                }`}>
-                {[
-                  { type: 'Comum', emoji: '�', color: 'from-green-400 to-blue-500' },
-                  { type: 'Dourado', emoji: '�', color: 'from-yellow-400 to-orange-500' },
-                  { type: 'Rei', emoji: '👑', color: 'from-purple-400 to-pink-500' },
-                  { type: 'Místico', emoji: '✨', color: 'from-blue-400 to-teal-500' },
-                ].map((crab, index) => (
-                  <div
-                    key={index}
-                    className={`bg-gradient-to-br ${crab.color} p-6 rounded-xl text-center transform hover:scale-110 transition-all duration-300 cursor-pointer hover:rotate-6 shadow-lg hover:shadow-2xl`}
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="text-4xl mb-2 animate-bounce" style={{ animationDelay: `${index * 0.2}s` }}>{crab.emoji}</div>
-                    <h3 className="text-lg font-bold text-white">{crab.type}</h3>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Seção NFTs */}
       <section
         ref={setRef('nfts')}
@@ -372,6 +289,7 @@ function LandingPage() {
           animation: spin-slow 8s linear infinite;
         }
       `}</style>
+
     </div>
   );
 }
