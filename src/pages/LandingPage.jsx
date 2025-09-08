@@ -4,18 +4,13 @@ import '../styles/header.css';
 
 function LandingPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [visibleSections, setVisibleSections] = useState(new Set());
   const sectionRefs = useRef({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [onlinePlayers, setOnlinePlayers] = useState(Math.floor(Math.random() * 500) + 1500);
 
-  // Função para verificar qual rota está ativa
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
-
-  // Efeito para detectar scroll e mudar a aparência do header
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -67,17 +62,47 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
 
-      {/* Seção Hero com Animação 3D Interativa */}
-      <section className="relative h-screen flex items-center justify-center">
+      {/* Seção Hero com Vídeo de Fundo */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Vídeo de Fundo */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/src/assets/MangueRecife.mp4" type="video/mp4" />
+          <source src="./src/assets/MangueRecife.mp4" type="video/mp4" />
+          Seu navegador não suporta vídeos.
+        </video>
+
+        {/* Overlay escuro para melhor legibilidade */}
+        <div className="absolute inset-0 bg-black/50 z-5"></div>
+
+        {/* GIF do CrabToken girando */}
+        <div className="absolute top-8 right-8 z-10 animate-spin-slow">
+          <img
+            src="/src/assets/crabtoken.gif"
+            alt="CrabCoin Token"
+            className="w-20 h-20 rounded-full border-4 border-yellow-400 shadow-2xl hover:scale-110 transition-transform duration-300"
+            onError={(e) => {
+              console.log('Erro ao carregar crabtoken.gif');
+              e.target.style.display = 'none';
+            }}
+          />
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping opacity-75"></div>
+        </div>
+
         {/* Conteúdo sobreposto */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
           <div className="text-center mb-8">
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-500 to-teal-500 bg-clip-text text-transparent animate-pulse">
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-500 to-teal-500 bg-clip-text text-transparent animate-pulse drop-shadow-lg">
               MANGUE RIDERS
             </h1>
-            <div className="bg-green-400 text-black p-6 rounded-lg border-4 border-green-600 shadow-2xl max-w-4xl mx-4 transform hover:scale-105 transition-all duration-300">
+            <div className="bg-green-400/90 backdrop-blur-sm text-black p-6 rounded-lg border-4 border-green-600 shadow-2xl max-w-4xl mx-4 transform hover:scale-105 transition-all duration-300">
               <p className="text-lg md:text-xl font-bold leading-relaxed">
-                EM RECIFE, O MANGUE ESTÁ SENDO POLUÍDO POR EMPRESÁRIOS GANANCIOSOS. MAS NÃO ESTÁ PERDIDO. 
+                EM RECIFE, O MANGUE ESTÁ SENDO POLUÍDO POR EMPRESÁRIOS GANANCIOSOS. MAS NÃO ESTÁ PERDIDO.
                 OS MANGUE RIDERS SURGEM COMO A ÚLTIMA ESPERANÇA DA NATUREZA. JUNTE-SE A MANGUITO NA LUTA PARA SALVAR O MANGUEZAL!
                 <br /><br />
                 <span className="text-sm">🏖️ De Recife Antigo às praias paradisíacas, a preservação começa agora!</span>
@@ -93,7 +118,7 @@ function LandingPage() {
               { value: '4', label: 'Mapas', color: 'green', gradient: 'from-green-500/20 to-emerald-500/20', border: 'border-green-500/30' },
               { value: '100+', label: 'NFTs', color: 'purple', gradient: 'from-purple-500/20 to-pink-500/20', border: 'border-purple-500/30' }
             ].map((stat, index) => (
-              <div key={index} className={`bg-gradient-to-br ${stat.gradient} p-4 rounded-lg border ${stat.border} transform hover:scale-105 transition-all duration-300`}>
+              <div key={index} className={`bg-gradient-to-br ${stat.gradient} backdrop-blur-sm p-4 rounded-lg border ${stat.border} transform hover:scale-105 transition-all duration-300`}>
                 <div className={`text-3xl font-bold text-${stat.color}-400`}>{stat.value}</div>
                 <div className={`text-sm text-${stat.color}-300`}>{stat.label}</div>
               </div>
@@ -105,62 +130,6 @@ function LandingPage() {
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
           <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Seção Mangue Poluído - Cena 1 */}
-      <section
-        ref={setRef('mangue-poluido')}
-        id="mangue-poluido"
-        className="py-20 px-4 relative bg-gradient-to-br from-gray-900 to-green-900/20"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className={`grid md:grid-cols-2 gap-12 items-center transition-all duration-1000 ${isVisible('mangue-poluido') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-            }`}>
-            <div className="space-y-6">
-              <h2 className="text-5xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-                MANGUE POLUÍDO
-              </h2>
-
-              <div className="bg-green-400 text-black p-6 rounded-3xl border-4 border-green-600 shadow-2xl transform hover:scale-105 transition-all duration-300">
-                <p className="text-lg font-bold">
-                  "O MANGUEZAL DE RECIFE ESTÁ SENDO DESTRUÍDO PELA POLUIÇÃO. MAS AINDA HÁ ESPERANÇA."
-                </p>
-              </div>
-
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Um ecossistema único ameaçado por lixo industrial e plástico. Árvores de mangue sufocadas, 
-                água contaminada e vida marinha em perigo. De Recife Antigo às praias paradisíacas, 
-                a luta pela preservação começa agora. Explore locais icônicos como o Porto de Recife, 
-                as ilhas do manguezal e as comunidades ribeirinhas que dependem deste habitat.
-              </p>
-            </div>
-
-            <div className={`relative transform transition-all duration-1000 delay-300 ${isVisible('mangue-poluido') ? 'scale-100 rotate-0' : 'scale-75 rotate-12'
-              }`}>
-              <div className="w-full h-80 bg-gradient-to-br from-green-900 via-blue-900 to-teal-900 rounded-xl border-4 border-green-500/30 overflow-hidden relative">
-                {/* Simulação da imagem do Mangue Poluído */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-green-900/50 to-blue-900/30"></div>
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-pulse"></div>
-                <div className="absolute top-1/4 left-1/4 w-16 h-32 bg-gray-800 rounded-lg transform rotate-12 opacity-60"></div>
-                <div className="absolute top-1/3 right-1/4 w-12 h-24 bg-gray-700 rounded-lg transform -rotate-6 opacity-70"></div>
-
-                {/* Lixo flutuante */}
-                {[...Array(10)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-2 h-2 bg-red-400 rounded-full animate-float opacity-60"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                      animationDelay: `${Math.random() * 3}s`,
-                      animationDuration: `${Math.random() * 2 + 3}s`
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -219,62 +188,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Seção O Encontro - Cena 4 */}
-      <section
-        ref={setRef('encontro')}
-        id="encontro"
-        className="py-20 px-4 bg-gradient-to-br from-blue-900/20 to-teal-900/20"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className={`grid md:grid-cols-2 gap-12 items-center transition-all duration-1000 ${isVisible('encontro') ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
-            }`}>
-            <div className={`relative transform transition-all duration-1000 delay-300 ${isVisible('encontro') ? 'scale-100 rotate-0' : 'scale-75 -rotate-12'
-              }`}>
-              <div className="w-full h-80 bg-gradient-to-br from-green-900 via-blue-900 to-teal-900 rounded-xl border-4 border-green-500/30 overflow-hidden relative">
-                {/* Simulação do crab mágico */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-green-900/50 to-blue-900/30"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-24 h-32 bg-gradient-to-br from-green-400 to-blue-600 rounded-full animate-pulse border-4 border-white/30"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full"></div>
-                </div>
-
-                {/* Energia azulada */}
-                {[...Array(15)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-1 h-1 bg-green-400 rounded-full animate-ping"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                      animationDelay: `${Math.random() * 2}s`,
-                      animationDuration: `${Math.random() * 1 + 1}s`
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <h2 className="text-5xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-                O ENCONTRO
-              </h2>
-
-              <div className="bg-green-400 text-black p-6 rounded-3xl border-4 border-green-600 shadow-2xl transform hover:scale-105 transition-all duration-300">
-                <p className="text-lg font-bold">
-                  "CRABS MÁGICOS, GUARDIÕES DO MANGUE… AGORA NOS AJUDAM NA LIMPEZA."
-                </p>
-              </div>
-
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Manguito encontra crabs misteriosos escondidos no manguezal. Cada crab possui poderes únicos
-                e recompensas especiais em CrabCoin, ajudando na missão de limpeza de Recife.
-                Explore os segredos escondidos nas raízes antigas e nas águas cristalinas do mangue.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Seção Limpeza Ambiental */}
       <section
         ref={setRef('limpeza')}
@@ -319,7 +232,7 @@ function LandingPage() {
           <div className={`transition-all duration-1000 ${isVisible('crabs') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
             }`}>
             <h2 className="text-5xl font-bold mb-12 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              CRABS DO MANGUE
+              MANGUE RIDERS
             </h2>
 
             <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -444,9 +357,18 @@ function LandingPage() {
           0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
           50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
         }
-        
+
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
         .animate-float {
           animation: float 4s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
         }
       `}</style>
     </div>
