@@ -72,8 +72,7 @@ function LandingPage() {
           muted
           playsInline
         >
-          <source src="/src/assets/MangueRecife.mp4" type="video/mp4" />
-          <source src="./src/assets/MangueRecife.mp4" type="video/mp4" />
+          <source src="/MangueRecife.mp4" type="video/mp4" />
           Seu navegador não suporta vídeos.
         </video>
 
@@ -81,13 +80,14 @@ function LandingPage() {
         <div className="absolute inset-0 bg-black/50 z-5"></div>
 
         {/* GIF do CrabToken girando */}
-        <div className="absolute top-8 right-8 z-10 animate-spin-slow">
+        <div className="absolute top-8 z-10">
           <img
-            src="/src/assets/crabtoken.gif"
+            src="/crabtoken.gif"
             alt="CrabCoin Token"
-            className="w-20 h-20 rounded-full border-4 border-yellow-400 shadow-2xl hover:scale-110 transition-transform duration-300"
+            className="w-20 h-20 rounded-full border-4 border-yellow-400 shadow-2xl hover:scale-110 transition-transform duration-300 coin-spin"
+            style={{ backfaceVisibility: 'visible' }}
             onError={(e) => {
-              console.log('Erro ao carregar crabtoken.gif');
+              console.log('Erro ao carregar crabToken.gif');
               e.target.style.display = 'none';
             }}
           />
@@ -100,7 +100,7 @@ function LandingPage() {
             <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-500 to-teal-500 bg-clip-text text-transparent animate-pulse drop-shadow-lg">
               MANGUE RIDERS
             </h1>
-            
+
             <div className="bg-green-400/90 backdrop-blur-sm text-black p-6 rounded-lg border-4 border-green-600 shadow-2xl max-w-4xl mx-4 transform hover:scale-105 transition-all duration-300">
               <p className="text-lg md:text-xl font-bold leading-relaxed">
                 EM RECIFE, O MANGUE ESTÁ SENDO POLUÍDO POR EMPRESÁRIOS GANANCIOSOS. MAS NÃO ESTÁ PERDIDO.
