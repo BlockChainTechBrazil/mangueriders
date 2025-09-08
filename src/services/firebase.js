@@ -10,7 +10,7 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,  // Adicionando a URL do Realtime Database para corrigir o aviso
-  databaseURL: "https://mangueriders-30fbe-default-rtdb.firebaseio.com/",
+  databaseURL: "https://bombriders-30fbe-default-rtdb.firebaseio.com/",
 };
 
 // Inicializar o Firebase
