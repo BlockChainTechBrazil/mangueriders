@@ -6,10 +6,10 @@ import { getDatabase } from 'firebase/database';
 // Configuração do Firebase com credenciais diretas
 const firebaseConfig = {
   apiKey: "AIzaSyDiCbW_Qc0P-Qiw0dYKD1m50PvGNJKRF_0",
-  authDomain: "bombrider-nft.firebaseapp.com",
-  databaseURL: "https://bombrider-nft-default-rtdb.firebaseio.com",
-  projectId: "bombrider-nft",
-  storageBucket: "bombrider-nft.firebasestorage.app",
+  authDomain: "mangueriders-nft.firebaseapp.com",
+  databaseURL: "https://mangueriders-nft-default-rtdb.firebaseio.com",
+  projectId: "mangueriders-nft",
+  storageBucket: "mangueriders-nft.firebasestorage.app",
   messagingSenderId: "845988569527",
   appId: "1:845988569527:web:e9f5b5e12b9b2e2f4a72b5"
 };

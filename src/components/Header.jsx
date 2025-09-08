@@ -21,14 +21,14 @@ const Header = () => {
 
   // Contexto da wallet
   const {
-  isConnected,
-  walletAddress,
-  balance,
-  networkName,
-  isCorrectNetwork,
-  ownedNFTs,
-  connectWallet,
-  disconnectWallet,
+    isConnected,
+    walletAddress,
+    balance,
+    networkName,
+    isCorrectNetwork,
+    ownedNFTs,
+    connectWallet,
+    disconnectWallet,
   } = useWallet();
 
   // Não precisamos mais simular jogadores online, já que o componente foi substituído
@@ -59,10 +59,10 @@ const Header = () => {
   const isActive = (path) => {
     return location.pathname === path;
   };
-  
+
   // Navegação com checagem de conexão para telas de jogo
   const handleNavClick = (path) => {
-    const requiresWallet = ["/game", "/multiplayer", "/multiplayer/game"]; 
+    const requiresWallet = ["/game", "/multiplayer", "/multiplayer/game"];
     if (requiresWallet.includes(path) && !isConnected) {
       // Abre menu da wallet para incentivar conexão
       setWalletMenuOpen(true);
@@ -84,8 +84,8 @@ const Header = () => {
       {/* Header Tecnológico Fixo */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-            ? "bg-black/80 backdrop-blur-md shadow-lg shadow-cyan-500/10"
-            : "bg-transparent"
+          ? "bg-black/80 backdrop-blur-md shadow-lg shadow-cyan-500/10"
+          : "bg-transparent"
           }`}
       >
         {/* Padrão tecnológico de fundo */}
@@ -114,7 +114,7 @@ const Header = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300">
-                  BOMBRIDER
+                  MANGUERIDER
                 </h1>
                 <div className="text-xs text-gray-400 font-mono">
                   /* VIRTUAL EXPERIENCE */
@@ -129,8 +129,8 @@ const Header = () => {
                     <button
                       onClick={() => handleNavClick(route.path)}
                       className={`header-button relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 overflow-hidden ${isActive(route.path)
-                          ? "text-black"
-                          : "text-gray-300 hover:text-white hover:bg-white/10"
+                        ? "text-black"
+                        : "text-gray-300 hover:text-white hover:bg-white/10"
                         }`}
                     >
                       {isActive(route.path) && (
@@ -359,8 +359,8 @@ const Header = () => {
           {/* Menu de navegação para mobile */}
           <div
             className={`md:hidden transition-all duration-300 overflow-hidden ${mobileMenuOpen
-                ? "max-h-96 opacity-100 scale-y-100"
-                : "max-h-0 opacity-0 scale-y-95"
+              ? "max-h-96 opacity-100 scale-y-100"
+              : "max-h-0 opacity-0 scale-y-95"
               }`}
             style={{ transformOrigin: "top" }}
           >
@@ -370,16 +370,16 @@ const Header = () => {
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-yellow-500/10 to-transparent"></div>
 
               <ul className="space-y-2">
-    {routes.map((route) => (
+                {routes.map((route) => (
                   <li key={route.path}>
                     <button
                       onClick={() => {
-      handleNavClick(route.path);
+                        handleNavClick(route.path);
                         setMobileMenuOpen(false);
                       }}
                       className={`w-full text-left pl-10 pr-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center relative overflow-hidden ${isActive(route.path)
-                          ? "bg-gradient-to-r from-yellow-400/20 to-orange-500/20 text-yellow-400"
-                          : "text-gray-300 hover:bg-white/5"
+                        ? "bg-gradient-to-r from-yellow-400/20 to-orange-500/20 text-yellow-400"
+                        : "text-gray-300 hover:bg-white/5"
                         }`}
                     >
                       {isActive(route.path) && (
@@ -443,7 +443,7 @@ const Header = () => {
                             </div>
                             {ownedNFTs.length > 0 && (
                               <div className="mt-2 grid grid-cols-4 gap-1">
-                                {ownedNFTs.slice(0,4).map((nft, idx) => (
+                                {ownedNFTs.slice(0, 4).map((nft, idx) => (
                                   <div key={idx} className="w-10 h-10 rounded overflow-hidden bg-cyan-900/30 border border-cyan-500/20">
                                     {nft.image ? (
                                       <img src={nft.image} alt={`nft ${nft.tokenId}`} className="w-full h-full object-cover" />

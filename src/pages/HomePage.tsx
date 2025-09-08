@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
                 animate={{ rotateX: [10, 5, 10] }}
                 transition={{ duration: 3, repeat: Infinity }}
               >
-                BombRiders
+                MangueRiders
               </motion.span>
             </motion.h1>
           </motion.div>
@@ -133,7 +133,7 @@ const HomePage: React.FC = () => {
             <a href="#" className="hover:text-yellow-400 transition">Twitter</a>
             <a href="#" className="hover:text-yellow-400 transition">Twitch</a>
           </div>
-          <p className="text-sm">© 2025 BombRiders. Todos os direitos reservados.</p>
+          <p className="text-sm">© 2025 BlockChain Tech Brazil. Todos os direitos reservados.</p>
         </footer>
       </div>
     </ParallaxProvider>

@@ -1,4 +1,4 @@
-// d:\Code\Meus Projetos\Jogos\BombRider\src\pathfinding.ts
+// d:\Code\Meus Projetos\Jogos\MangueRiders\src\pathfinding.ts
 import { CellType } from './types';
 import type { Grid, BombData } from './types'; // Usar import type para tipos
 
@@ -87,7 +87,7 @@ export function findPath(grid: Grid,
       y: number;
       penalty?: number; // Penalidade de movimento para terrenos diferentes
     }
-    
+
     const neighborsCoords: Direction[] = [
       { x: currentNode.x, y: currentNode.y - 1 }, // Up (row decreases)
       { x: currentNode.x, y: currentNode.y + 1 }, // Down (row increases)
@@ -105,7 +105,7 @@ export function findPath(grid: Grid,
       if (closedList.has(neighborKey)) {
         continue;
       }
-      
+
       // Verificações de transposição para células que não são o destino final
       const isDestination = (x === end.c && y === end.r);
 
@@ -121,13 +121,13 @@ export function findPath(grid: Grid,
         const isBombLocation = bombs.some(bomb => bomb.col === x && bomb.row === y);
         if (isBombLocation) {
           continue;
-        }        const cellType = grid[y][x]; // Acessar grid com [row][col]
-        
+        } const cellType = grid[y][x]; // Acessar grid com [row][col]
+
         // Blocos sólidos são sempre intransponíveis
         if (cellType === CellType.SOLID_BLOCK) {
           continue;
         }
-        
+
         // Blocos destrutíveis são intransponíveis por padrão, 
         // mas podem ser permitidos com o parâmetro allowDestructible
         if (cellType === CellType.DESTRUCTIBLE_BLOCK) {

@@ -1,17 +1,13 @@
 {
-  "name": "bombrider",
+  "name": "mangueriders",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host --port 5174",
+    "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "contract:compile": "hardhat compile",
-    "contract:deploy": "hardhat run scripts/deploy.cjs --network sepolia",
-    "contract:verify": "hardhat verify --network sepolia",
-    "contract:test": "hardhat test test/BombRiderNFT.test.cjs"
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.0",

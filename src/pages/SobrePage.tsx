@@ -19,7 +19,7 @@ const SobrePage: React.FC = () => {
           initial="hidden"
           animate="visible"
         >
-          Sobre o BombRiders
+          Sobre o MangueRiders
         </motion.h1>
 
         <motion.section
@@ -31,7 +31,7 @@ const SobrePage: React.FC = () => {
         >
           <h2 className="text-2xl font-bold text-cyan-300 mb-3">Nossa História</h2>
           <p className="text-cyan-100 leading-relaxed">
-            Em um futuro distópico, pilotos chamados BombRiders usam bombas tecnológicas para
+            Em Recife, o mangue está sendo poluído por empresários gananciosos. Manguito surge como herói para limpar o ambiente.
             despertar dinossauros biomecânicos e restaurar o equilíbrio da Terra. O projeto mistura
             aventura arcade com elementos modernos, criando uma experiência acessível e vibrante.
           </p>

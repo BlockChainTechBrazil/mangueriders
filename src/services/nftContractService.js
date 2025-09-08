@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-// ABI do contrato BombRiderNFT (completo do deploy)
+// ABI do contrato MangueRiderNFT (completo do deploy)
 const CONTRACT_ABI = [
   {
     "inputs": [],

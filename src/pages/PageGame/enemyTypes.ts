@@ -1,4 +1,4 @@
-// Enemy types and configuration for BombRider
+// Enemy types and configuration for MangueRiders
 import { MapType } from './maps';
 
 // Enum for enemy types

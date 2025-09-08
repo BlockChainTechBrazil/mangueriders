@@ -10,7 +10,7 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
   const [selectedMap, setSelectedMap] = useState(null);
   const [selectedMapObj, setSelectedMapObj] = useState(null);
   const { setPlayerCharacter, setCurrentMap, setMapData } = useGameStore();
-  
+
   // Inicialização dos valores padrão
   useEffect(() => {
     if (characters && Object.values(characters).length > 0) {
@@ -19,14 +19,14 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
       setSelectedCharacter(defaultCharacter.name);
       setSelectedCharacterObj(defaultCharacter);
     }
-    
+
     if (maps && Object.values(maps).length > 0) {
       const defaultMap = Object.values(maps).find(map => map.name === 'Floresta Encantada') || Object.values(maps)[0];
       setSelectedMap(defaultMap.name);
       setSelectedMapObj(defaultMap);
     }
   }, [characters, maps]);
-  
+
   // Atualiza o objeto do personagem quando a seleção muda
   useEffect(() => {
     if (selectedCharacter && characters) {
@@ -38,7 +38,7 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
       }
     }
   }, [selectedCharacter, characters]);
-  
+
   // Atualiza o objeto do mapa quando a seleção muda
   useEffect(() => {
     if (selectedMap && maps) {
@@ -46,21 +46,21 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
       if (mapObj) setSelectedMapObj(mapObj);
     }
   }, [selectedMap, maps]);
-  
+
   // Inicia o jogo com o personagem e mapa selecionados
   const handleStartGame = () => {
     if (!selectedCharacterObj || !selectedMapObj) return;
-    
+
     // Encontra a chave do mapa com base no nome selecionado
     const mapKey = Object.keys(maps).find(
       key => maps[key].name === selectedMap
     ) || 'FOREST';
-    
+
     // Encontra a chave do personagem com base no nome selecionado
     const characterKey = Object.keys(characters).find(
       key => characters[key].name === selectedCharacter
     ) || 'RIDER';
-    
+
     // Verificação especial para nomes específicos (caso direto)
     if (selectedCharacter === "Weet") {
       console.log("Personagem Weet selecionado, usando chave WEET diretamente");
@@ -78,19 +78,19 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
       console.warn("Chave de personagem inválida, usando:", firstKey);
       setPlayerCharacter(firstKey);
     }
-    
+
     setCurrentMap(mapKey);
     setMapData(selectedMapObj); // Define os dados do mapa diretamente
-    
+
     // Chama o callback
     onStartGame && onStartGame(characterKey, mapKey);
   };
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="bg-card p-8 rounded-lg shadow-lg max-w-4xl w-full">
-        <h1 className="text-4xl font-bold text-center mb-6 text-primary">BombRider</h1>
-        
+        <h1 className="text-4xl font-bold text-center mb-6 text-primary">MangueRider</h1>
+
         <div className="flex flex-col md:flex-row gap-6">
           {/* Seção de seleção de personagem */}
           <div className="flex-1">
@@ -116,7 +116,7 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
                 </Button>
               ))}
             </div>
-            
+
             {/* Exibe detalhes do personagem selecionado */}
             {selectedCharacterObj && (
               <div className="bg-gray-200 bg-opacity-20 p-3 rounded-md">
@@ -142,7 +142,7 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
               </div>
             )}
           </div>
-          
+
           {/* Seção de seleção de mapa */}
           <div className="flex-1">
             <h2 className="text-xl font-semibold mb-2">Escolha o Mapa</h2>
@@ -165,12 +165,12 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
                 </Button>
               ))}
             </div>
-            
+
             {/* Exibe detalhes do mapa selecionado */}
             {selectedMapObj && (
-              <div 
-                className="p-3 rounded-md relative" 
-                style={{ 
+              <div
+                className="p-3 rounded-md relative"
+                style={{
                   backgroundColor: selectedMapObj.groundColor || '#444',
                   color: '#fff',
                   textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
@@ -186,7 +186,7 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
             )}
           </div>
         </div>
-        
+
         {/* Exibição dos powerups do personagem com o mapa selecionado */}
         {selectedCharacterObj && selectedMapObj && (
           <div className="mt-6 mb-4 bg-gray-200 p-3 rounded-md border border-primary border-opacity-30">
@@ -204,16 +204,16 @@ const MainMenu = ({ characters, maps, onStartGame }) => {
             <p className="text-xs mt-2 text-muted-foreground">Colete power-ups destruindo blocos com bombas</p>
           </div>
         )}
-        
+
         <div className="mt-8 flex flex-col gap-2">
           <Button size="lg" style={{ cursor: 'pointer' }} onClick={handleStartGame}>
             Iniciar Jogo
           </Button>
-          
-          <Button variant="outline" size="lg" onClick={() => navigate('/')}  style={{ cursor: 'pointer' }}>
+
+          <Button variant="outline" size="lg" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             Voltar
           </Button>
-          
+
           <div className="text-center mt-4 text-sm text-muted-foreground">
             <p>Versão 2.0 — Planejando integração com Web3</p>
           </div>

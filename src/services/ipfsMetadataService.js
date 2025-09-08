@@ -25,7 +25,7 @@ class IPFSMetadataService {
       const metadata = JSON.stringify({
         name: fileName,
         keyvalues: {
-          project: 'BombRider',
+          project: 'MangueRider',
           type: 'nft-image'
         }
       });
@@ -80,9 +80,9 @@ class IPFSMetadataService {
         body: JSON.stringify({
           pinataOptions: { cidVersion: 1 },
           pinataMetadata: {
-            name: `${metadata.name || 'BombRider NFT'} Metadata`,
+            name: `${metadata.name || 'MangueRiders NFT'} Metadata`,
             keyvalues: {
-              project: 'BombRider',
+              project: 'MangueRiders',
               type: 'nft-metadata',
               tokenType: metadata.attributes?.find(attr => attr.trait_type === 'Type')?.value || 'unknown',
               rarity: metadata.attributes?.find(attr => attr.trait_type === 'Rarity')?.value || 'unknown'
@@ -136,8 +136,8 @@ class IPFSMetadataService {
    */
   createNFTMetadata(nftData) {
     return {
-      name: nftData.name || 'BombRider NFT',
-      description: nftData.description || 'A unique BombRider character NFT',
+      name: nftData.name || 'MangueRiders NFT',
+      description: nftData.description || 'A unique MangueRiders character NFT',
       image: nftData.imageUrl || this.getFallbackImageURL('default'),
       attributes: [
         {
@@ -173,7 +173,7 @@ class IPFSMetadataService {
           value: nftData.attributes?.theme || 'Classic'
         }
       ],
-      external_url: nftData.externalUrl || 'https://bombriders.com',
+      external_url: nftData.externalUrl || 'https://mangueriders.com',
       animation_url: nftData.animationUrl,
       properties: {
         category: 'Gaming',

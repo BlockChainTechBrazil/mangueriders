@@ -1,18 +1,17 @@
-# 🧨 BombRider
+# 🧨 MangueRiders
 
-Um jogo de ação estratégica inspirado em Bomberman, com dinossauros e power-ups!
+Um jogo de ação estratégica inspirado em limpeza ambiental, com o personagem Manguito e o token CrabCoin!
 
 ## 🎮 Sobre o Jogo
 
-BombRider é um jogo de ação estratégica onde você controla um personagem que coloca bombas para destruir obstáculos e derrotar inimigos. O jogo apresenta diferentes personagens (Riders), cada um com habilidades únicas, e dinossauros que podem ser coletados para ajudar na aventura.
+MangueRiders é um jogo de ação estratégica onde você controla Manguito, um personagem que limpa o mangue de Recife coletando lixo. O jogo apresenta diferentes tipos de lixo (latinhas, garrafas, etc.), crabs que podem ser encontrados para ganhar moedas, e empresários que continuam jogando lixo no mangue.
 
 ## 🚀 Características
 
-- **5 Personagens Jogáveis**: Aria (Ar), Bront (Terra), Kiro (Fogo), Lume (Éter) e Zunn (Água)
-- **6 Tipos de Dinossauros**: Cada um com habilidades especiais
-- **5 Mapas Diferentes**: Cada um com características únicas
-- **Power-ups**: Aumente suas bombas, velocidade e muito mais
-- **Inimigos com IA**: Inimigos que perseguem o jogador e fogem das bombas
+- **Personagem Principal**: Manguito, o limpador do mangue
+- **Tipos de Lixo**: Latinhas, garrafas, plásticos e outros resíduos
+- **CrabCoin**: Token do jogo ganho ao limpar e encontrar crabs
+- **Empresários Inimigos**: Continuam jogando lixo, criando desafios dinâmicos
 - **Gráficos 3D**: Utilizando Three.js e React Three Fiber
 
 ## 🛠️ Tecnologias Utilizadas
@@ -32,8 +31,8 @@ BombRider é um jogo de ação estratégica onde você controla um personagem qu
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/bombrider.git
-cd bombrider
+git clone https://github.com/seu-usuario/mangueriders.git
+cd mangueriders
 ```
 
 2. Instale as dependências:
@@ -54,7 +53,7 @@ http://localhost:5173
 ## 🎮 Como Jogar
 
 - **Movimento**: Setas ou WASD
-- **Colocar Bomba**: Espaço
+- **Coletar Lixo**: Espaço ou clique
 - **Pausar**: ESC ou P
 
 ## 🔄 Atualizações Recentes
@@ -62,8 +61,8 @@ http://localhost:5173
 ### Versão 2.0
 - Câmera isométrica fixa para melhor visualização do jogo
 - Controle do personagem aprimorado com colisões
-- Adicionados inimigos com IA que perseguem o jogador e fogem das bombas
-- Melhorias na geração de mapas
+- Adicionados empresários inimigos que jogam lixo dinamicamente
+- Melhorias na geração de mapas com elementos do mangue
 - Ferramentas de depuração para desenvolvimento
 
 ## 🚧 Roadmap

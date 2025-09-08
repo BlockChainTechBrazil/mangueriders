@@ -260,15 +260,15 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, onEquip, onView }) => {
 // Seção informativa (separada do NFTCard)
 const NFTInfoSection: React.FC = () => (
   <div className="bg-gray-900 bg-opacity-75 p-6 rounded-2xl mb-8 border border-yellow-600 border-opacity-30">
-    <h2 className="text-2xl font-bold mb-4 text-yellow-400">Como Funcionam NFTs no BombRider</h2>
+    <h2 className="text-2xl font-bold mb-4 text-yellow-400">Como Funcionam NFTs no MangueRiders</h2>
 
     <div className="space-y-4 text-gray-100">
       <p>
-        Em BombRider, <span className="text-yellow-300 font-bold">os personagens principais (Riders) não são NFTs</span> - eles são parte do jogo base
+        Em MangueRiders, <span className="text-yellow-300 font-bold">os personagens principais (Riders) não são NFTs</span> - eles são parte do jogo base
         para garantir que todos os jogadores tenham acesso ao conteúdo essencial. Em vez disso, nossos NFTs focam em conteúdo colecionável e aprimoramentos.
       </p>
 
-      <h3 className="text-lg font-semibold text-yellow-300 mt-4">O que são os NFTs de BombRider?</h3>
+      <h3 className="text-lg font-semibold text-yellow-300 mt-4">O que são os NFTs de MangueRider?</h3>
       <ul className="list-disc pl-5 space-y-2">
         <li><span className="font-bold">Dinos colecionáveis:</span> Companheiros que acompanham seu Rider em batalha com bônus e habilidades especiais</li>
         <li><span className="font-bold">Skins para Dinos:</span> Visuais únicos que personalizam a aparência do seu Dino</li>
@@ -517,7 +517,7 @@ const NFTInventory: React.FC = () => {
         id: `token-${nftInfo.tokenId}`,
         type: nftInfo.tokenType.toLowerCase(),
         name: nftInfo.metadata?.name || `NFT #${nftInfo.tokenId}`,
-        description: nftInfo.metadata?.description || 'BombRider NFT',
+        description: nftInfo.metadata?.description || 'MangueRider NFT',
         rarity: nftInfo.rarity as NFT['rarity'],
         category: nftInfo.tokenType.toLowerCase(),
         value: 1000, // Valor estimado
@@ -787,7 +787,7 @@ const NFTInventory: React.FC = () => {
           metadata: {
             image: uploadedImageUrl,
             animation: null,
-            external_url: 'https://bombriders.com'
+            external_url: 'https://mangueriders.com'
           },
           element: selectedNFTForBlockchain.element
         };
@@ -1061,7 +1061,7 @@ const NFTInventory: React.FC = () => {
               <div className="mt-12 p-6 bg-gray-800 bg-opacity-70 rounded-2xl">
                 <h2 className="text-2xl font-bold mb-4">🚀 Sobre o Futuro dos NFTs</h2>
                 <p className="mb-4">
-                  BombRider está implementando um sistema de NFTs cuidadosamente projetado para aprimorar
+                  MangueRider está implementando um sistema de NFTs cuidadosamente projetado para aprimorar
                   a experiência de jogo sem criar desvantagens para jogadores não-NFT. Nossa visão:
                 </p>
 
