@@ -433,7 +433,7 @@ class NFTService {
         id: nftId,
         type: nftData.type || 'rider_skin',
         name: nftData.name,
-        description: nftData.description || 'Um NFT exclusivo do MangueRiders',
+        description: nftData.description || 'Um NFT exclusivo do BombRider',
         rarity: (nftData.rarity || 'rare') as 'common' | 'rare' | 'epic' | 'legendary' | 'mythic',
         category: nftData.category || 'collectible',
         value: nftData.value || 100,
@@ -445,7 +445,7 @@ class NFTService {
         metadata: nftData.metadata || {
           image: `/assets/nfts/${nftData.type || 'character'}_${nftData.rarity || 'rare'}.png`,
           animation: null,
-          external_url: `https://mangueriders.game/nft/${nftId}`
+          external_url: `https://bombrider.game/nft/${nftId}`
         },
         element: nftData.element
       };

@@ -42,7 +42,7 @@ function App() {
 
               <div className="content-wrapper pt-20 transition-all">
                 <Routes>
-                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/" element={<HomePage />} />
                   <Route path="/home" element={<HomePage />} />
                   <Route path="/sobre" element={<SobrePage />} />
                   {/* Rotas protegidas por conexão da carteira */}
@@ -51,7 +51,7 @@ function App() {
                   <Route path="/game" element={<ProtectedRoute><GamePage /></ProtectedRoute>} />
                   <Route path="/multiplayer/game" element={<ProtectedRoute><GamePageMultiplayer /></ProtectedRoute>} />
                   <Route path="/landing" element={<LandingPage />} />{" "}
-                  {/* Agora é a rota principal, mantido para compatibilidade */}
+                  {/* Mantido para referência, mas não será a rota principal */}
                   <Route path="/gaya" element={<AvalancheGaya />} />
                   <Route path="/gaya1" element={<NewGayaLandingPage />} />
                   <Route path="/gaya2" element={<GayaLandingPage />} />

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract MangueRiderNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
+contract BombRiderNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -37,7 +37,7 @@ contract MangueRiderNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     event MintPausedChanged(bool paused);
 
     constructor()
-        ERC721("MangueRider Characters", "MRIDER")
+        ERC721("BombRider Characters", "BRIDER")
         Ownable(msg.sender)
     {}
 

@@ -1,104 +1,103 @@
-🧨 Game Design Document (GDD) — MangueRiders
+🧨 Game Design Document (GDD) — BombRider
 
 ---
 
-Última Atualização: 8 de setembro de 2025
+Última Atualização: 4 de junho de 2025
 Autor: [Você]
-Versão: 3.0 — Adaptação para tema ambiental com CrabCoin
+Versão: 2.0 — Planejando integração com Web3 e adaptação transmídia
 
 ---
 
 📌 1. Visão Geral
 
-Nome do Jogo: MangueRiders
-Gênero: Ação Ambiental, Coleta e Limpeza, Aventura com NFTs opcionais
-Estilo Visual: 3D realista com elementos cartunescos (usando Three.js e bibliotecas 3D)
+Nome do Jogo: BombRider
+Gênero: Ação Estratégica, Multiplayer, Aventura com NFTs opcionais
+Estilo Visual: Cartunesco 3D isométrico (com assets gerados por IA + pixel stylized FX)
 Engine: React + Three.js + @react-three/fiber
-Distribuição: Web (PWA), com foco em educação ambiental
+Distribuição: Web (PWA), builds para desktop com Electron e futuro mobile com Capacitor
 
 ---
 
 🎯 2. Objetivo Principal
 
-O jogador controla Manguito, um herói ambiental que limpa o mangue de Recife de lixo jogado por empresários gananciosos. Durante a limpeza, coleta lixo (latinhas, garrafas), encontra crabs que dão moedas, e ganha CrabCoin para evoluir e comprar itens.
+O jogador controla um Rider aventureiro em um mundo fragmentado, devendo explorar mapas perigosos, encontrar ovos de dinossauro, e usar bombas para derrotar inimigos e dominar arenas.
 
 Mecânicas principais:
 
-Coleta de lixo com aspirador ou rede
+Posicionamento estratégico de bombas no estilo clássico (grid-based)
 
-Encontro de crabs raros que dão recompensas
+Exploração de mapas e coleta de ovos de dinossauros
 
-Sistema de economia com CrabCoin
+Evolução dos dinos com o tempo de uso (vida extra e habilidades bônus)
 
-Limpeza progressiva do mangue para desbloquear áreas
+Coleção de skins raras e NFTs opcionais
 
-Educação ambiental integrada ao gameplay
+PvP local/online com apostas em tokens
 
 ---
 
-� 3. História e Universo
+🦖 3. História e Universo
 
 🌍 Sinopse
 
-Em Recife, o manguezal está sendo destruído pela poluição causada por empresários sem escrúpulos que jogam lixo indiscriminadamente. Manguito, um jovem ativista ambiental, decide agir. Equipado com um aspirador high-tech ou uma rede mágica, ele parte para limpar o mangue, coletar lixo e restaurar o ecossistema.
+Num futuro colapsado, onde a ciência e a magia colidiram, portais do tempo abriram rachaduras na realidade, trazendo de volta espécies extintas. A civilização caiu. Agora, os Riders, sobreviventes com poderes elementares, lutam para restaurar a ordem em um mundo dominado por relíquias do passado — os Dinossauros.
 
-Durante sua jornada, encontra crabs misteriosos que guardam segredos antigos do mangue. Cada crab coletado dá moedas especiais (CrabCoin), que podem ser usadas para melhorar equipamentos ou comprar NFTs únicos.
+Guiado por uma entidade misteriosa chamada Kora, você viaja entre ruínas, florestas e desertos radioativos em busca dos ovos mágicos. Esses dinossauros não são comuns: possuem laços com os antigos elementos e podem alterar o rumo de uma batalha.
 
 👾 Antagonista
 
-Os empresários poluentes, representados como vilões corporativos que continuam jogando lixo no mangue, criando obstáculos e inimigos para Manguito.
+Um tirano interdimensional conhecido como Dr. Nexx deseja capturar todos os dinossauros para criar um exército de clones biomecânicos e tomar o controle dos portais do tempo.
 
 ---
 
-👤 4. Personagem Jogável
+👤 4. Personagens Jogáveis
 
-Nome: Manguito
-Habilidade: Aspirador de lixo ou rede coletora
-Personalidade: Determinado, amigável, apaixonado pela natureza
+Nome	Elemento	Habilidade Passiva	Personalidade
 
-Manguito pode evoluir seu equipamento com CrabCoin, desbloqueando novos poderes como velocidade aumentada ou capacidade de coleta maior.
+Aria	Ar	Velocidade +	Rebelde e veloz
+Bront	Terra	Reduz knockback	Paciente e forte
+Kiro	Fogo	Aumenta alcance	Intenso e explosivo
+Lume	Éter	Inicia com 2 bombas	Místico e enigmático
+Zunn	Água	Atravessa água	Serene e precisa
 
----
+Cada Rider pode montar qualquer dino.
 
-� 5. Crabs e Recompensas
-
-Os crabs são criaturas especiais encontradas no mangue. Cada tipo dá uma quantidade diferente de CrabCoin:
-
-Nome	Tipo	Recompensa	Especial
-
-Crab Comum	Comum	1 CrabCoin	Nenhum
-Crab Dourado	Raro	5 CrabCoin	+ velocidade temporária
-Crab Rei	Lendário	10 CrabCoin	+ capacidade de bolsa
-
-Crabs aparecem aleatoriamente durante a limpeza.
+Skins alternativas podem ser NFTs (sem afetar jogabilidade).
 
 ---
 
-💰 6. Sistema de Economia (CrabCoin)
+🦖 5. Dinossauros
 
-CrabCoin é a moeda do jogo, ganha através de:
+Os dinossauros não são montarias padrão. São descobertos nos mapas dentro de ovos. Ao serem ativados, dão vida extra, força e poderes especiais.
+Eles evoluem conforme o uso (batalhas, tempo montado).
 
-Coleta de lixo: 0.1 CrabCoin por item
-Encontro de crabs: 1-10 CrabCoin dependendo do tipo
-Missões diárias: Recompensas extras
+Nome	Tipo	Habilidade Especial Inicial	Evolução
 
-Usado para:
+Raptorix	Velocidade	Aumenta velocidade do Rider	Pode atravessar blocos
+TriceraBoom	Defesa	Protege contra 1 explosão extra	Reflete explosões
+Flameodon	Ataque	Fogo extra nas bombas	Cria explosões em cruz
+Aqualux	Suporte	Pode atravessar água sem perder bomba	Escudo aquático temporário
+Aerozard	Mobilidade	Pulo curto por cima de bombas	Dash aéreo curto
+T-Rexon	Força	Empurra blocos/bombas	Destrói blocos frágeis ao contato
 
-Comprar upgrades para o aspirador/rede
-Desbloquear skins para Manguito
-Comprar NFTs ambientais
+Raros: aparecem em fases especiais, são colecionáveis.
+
+Skins raras = cosméticos NFT.
 
 ---
 
-�️ 7. Lixo e Coleta
+💣 6. Power-Ups (Estilo Super Bomberman)
 
-Tipos de lixo:
+Ícone	Nome	Efeito
 
-Latinhas: Fáceis de coletar, 0.1 CrabCoin
-Garrafas: Médias, 0.2 CrabCoin
-Lixo tóxico: Difíceis, 0.5 CrabCoin, mas perigosos
-
-O jogador usa o aspirador para sugar o lixo ou a rede para capturar. Bolsas têm limite de capacidade.
+💣	Bomb Up	+1 bomba simultânea
+🔥	Fire Up	+1 de alcance de explosão
+🏃‍♂️	Speed Up	+ velocidade do jogador
+🛡️	Full Armor	Invulnerabilidade curta após dano
+💫	Remote Bomb	Detona bomba manualmente
+💨	Kick	Chuta bomba pela linha
+🌀	Pass	Atravesse bombas sem colisão
+🎲	Randomizer	Pode ser efeito positivo ou negativo
 
 ---
 
@@ -106,17 +105,17 @@ O jogador usa o aspirador para sugar o lixo ou a rede para capturar. Bolsas têm
 
 Região	Características Principais
 
-Mangue de Recife	Áreas poluídas com lixo espalhado, raízes e água
-Rio poluído	Obstáculos flutuantes como lixo, correntezas
-Floresta de Mangue	Árvores e raízes como barreiras, esconderijos de crabs
-Praia poluída	Areia com lixo enterrado, ondas
-Arena de Limpeza (PvP)	Simétrica, cheia de lixo e desafios ambientais
+Floresta Pré-Histórica	Grama oculta bombas, ovos escondidos
+Caverna do Eco	Som reverbera bombas (detona em delay)
+Deserto Atômico	Tempestades de areia reduzem visão temporariamente
+Pântano Mutante	Slimes e terreno escorregadio
+Arena do Tempo (PvP)	Simétrica, cheia de armadilhas e efeitos climáticos
 
 🌌 Portais Secretos
 
-Áreas limpas desbloqueiam portais para crabs lendários
+Só abertos com dinossauros evoluídos
 
-Chefes: Empresários gigantes que jogam lixo
+Chefes secretos e recompensas lendárias
 
 ---
 
@@ -124,10 +123,10 @@ Chefes: Empresários gigantes que jogam lixo
 
 Nome	Comportamento	Observações
 
-Poluidor	Anda jogando lixo	Deixa rastro de lixo, mini-chefe
-Drone Poluente	Persegue por radar	Rápido, mas frágil
-Lixo Vivo	Move-se aleatoriamente, explode se não coletado	Solta loot raro
-Slime Tóxico	Libera nuvem que desativa equipamentos	Apenas em áreas poluídas
+Dino Sombrio	Imita seus movimentos	Mini-chefe
+Drone do Nexx	Persegue por radar	Rápido, mas frágil
+Bomba-Viva	Anda aleatoriamente e explode	Solta loot raro às vezes
+Slime Tóxico	Libera nuvem que desativa power-ups	Apenas em pântano
 
 ---
 
@@ -135,25 +134,25 @@ Slime Tóxico	Libera nuvem que desativa equipamentos	Apenas em áreas poluídas
 
 Modo	Descrição
 
-Campanha Solo	Narrativa de limpeza progressiva do mangue
-Coop Local	Até 2 jogadores limpando juntos
-Arena PvP	Duelo de limpeza com ranking e skins NFT como prêmio
-Arena Eco	PvP com foco em sustentabilidade (opcional)
-Fase Infinita	Limpe o máximo possível com leaderboard
+Campanha Solo	Narrativa com progressão e exploração de fases
+Coop Local	Até 2 jogadores na mesma tela
+Arena PvP	Duelo com ranking e skins NFT como prêmio
+Arena Cripto	PvP com apostas usando tokens (opcional)
+Fase Infinita	Sobreviva o maior tempo possível com leaderboard
 
 ---
 
 🌐 10. NFTs e Economia (Opcional)
 
-NFTs de crabs raros e itens ambientais
+Skins de Riders e dinossauros como NFTs
 
-Sistema de evolução com CrabCoin → recompensa com NFT visual
+Sistema de evolução → recompensa com NFT visual
 
-Arena PvP com foco em limpeza via MetaMask/WalletConnect
+Arena PvP com apostas via MetaMask/WalletConnect
 
-Marketplace interno para itens ecológicos
+Marketplace interno e crafting de ovos raros
 
-Loot boxes com skins ambientais (sem pay-to-win)
+Loot boxes cosméticas (sem pay-to-win)
 
 ---
 
@@ -161,15 +160,15 @@ Loot boxes com skins ambientais (sem pay-to-win)
 
 Front-end: React, Three.js, @react-three/fiber, Zustand
 
-Assets/Arte: Modelos 3D de mangue, lixo, crabs gerados por IA
+Assets/Arte: Piskel, DALL·E, Leonardo AI, PBR com stylization
 
-Animações: React Spring, Drei
+Animações: React Spring, Drei, Mixamo
 
-Blockchain: Polygon ou Solana para CrabCoin
+Blockchain: Polygon ou Solana (via smart contracts)
 
-Carteiras: MetaMask, WalletConnect
+Carteiras: MetaMask, WalletConnect (etapa 3)
 
-Servidor: Firebase para multiplayer
+Servidor futuro: Firebase + WebSockets (PvP Online)
 
 ---
 
@@ -177,17 +176,17 @@ Servidor: Firebase para multiplayer
 
 ✅ Etapa 1 – Protótipo
 
-Cena 3D básica do mangue
+Grid, bombas, power-ups clássicos
 
-Controles de Manguito
+1 mapa com ovos escondidos
 
-Sistema de coleta simples
+Movimentação fluida com colisões
 
 🧪 Etapa 2 – MVP Jogável
 
-Múltiplos tipos de lixo e crabs
+Múltiplos personagens e dinossauros
 
-Sistema de CrabCoin
+Sistema de evolução de dinossauros
 
 Modo PvP local e mapa interativo
 
@@ -197,10 +196,8 @@ Interface e HUD + menu dinâmico
 
 Conexão com carteiras cripto
 
-PvP online com ranking
+PvP online com ranking e tokens
 
-Lançamento de NFTs ambientais
-
-Eventos sazonais de limpeza
+Lançamento de NFTs cosméticos
 
 Marketplace + eventos sazonais

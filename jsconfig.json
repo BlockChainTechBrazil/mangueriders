@@ -11,7 +11,7 @@
   "exclude": [
     "hardhat.config.js",
     "scripts/**/*.js",
-    "      "test /**/*.js"",
+    "test/**/*.js",
     "node_modules"
   ]
 }
