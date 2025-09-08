@@ -1,0 +1,16 @@
+Modelos GLB disponíveis:
+
+1. Rider.glb - Modelo principal do jogador
+   - Usado pelo componente Player.tsx
+   - Acesso pelo caminho '/models/Rider.glb' no código
+   - Suporta animações de idle, run/walk e attack
+
+2. Weet.glb - Modelo alternativo do jogador
+   - Pode ser usado como personagem alternativo 
+   - Acesso pelo caminho '/models/Weet.glb' no código
+
+Os modelos GLB são preferidos em vez de usar geometrias procedurais porque oferecem:
+- Animações complexas pré-definidas
+- Texturas e materiais de alta qualidade
+- Melhor desempenho para personagens detalhados
+- Compatibilidade com ferramentas de modelagem 3D externas

@@ -1,0 +1,38 @@
+/* Estilos para corrigir problemas de scroll na landing page GAYA */
+
+/* Classe para desativar completamente qualquer tipo de scrolling automático */
+html.gaya-page,
+body.gaya-page {
+  scroll-behavior: auto !important;
+  overflow-anchor: none !important;
+  overscroll-behavior: none !important;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+}
+
+/* Classe específica para o scroll da landing page */
+.gaya-container {
+  scroll-behavior: auto !important;
+  overflow-anchor: none !important;
+  overscroll-behavior: none !important;
+  scroll-snap-type: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Desativar qualquer efeito parallax ou perspectiva que cause problemas */
+.gaya-container {
+  perspective: none !important;
+  transform-style: flat !important;
+}
+
+/* Ajustes para melhorar visibilidade durante scrolling */
+.gaya-section {
+  scroll-margin-top: 20vh; /* Espaço adicional antes da seção ao fazer scroll */
+  scroll-margin-bottom: 20vh; /* Espaço adicional após a seção ao fazer scroll */
+}
+
+/* Forçar a primeira seção a ter uma altura menor para evitar scrolling excessivo */
+#hero.gaya-section {
+  min-height: 70vh !important;
+  padding-top: 20vh !important;
+}

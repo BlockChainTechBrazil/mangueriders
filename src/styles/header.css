@@ -1,0 +1,138 @@
+@keyframes circuit {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(1000%);
+  }
+}
+
+.animate-circuit {
+  animation: circuit 3s linear infinite;
+}
+
+/* Efeito de hover nos botões do header */
+.header-button:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Efeito de pulso na notificação */
+.notification-pulse {
+  animation: notificationPulse 2s infinite;
+}
+
+@keyframes notificationPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 204, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 204, 0, 0);
+  }
+}
+
+/* Efeito de pixelização para o hover nos botões */
+.header-button:hover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, transparent 5%, 
+    rgba(255, 204, 0, 0.8) 5%, rgba(255, 204, 0, 0.8) 10%, 
+    transparent 10%, transparent 15%,
+    rgba(255, 204, 0, 0.8) 15%, rgba(255, 204, 0, 0.8) 20%,
+    transparent 20%, transparent 25%,
+    rgba(255, 204, 0, 0.8) 25%, rgba(255, 204, 0, 0.8) 30%,
+    transparent 30%, transparent 35%, 
+    rgba(255, 204, 0, 0.8) 35%, rgba(255, 204, 0, 0.8) 40%, 
+    transparent 40%, transparent 45%,
+    rgba(255, 204, 0, 0.8) 45%, rgba(255, 204, 0, 0.8) 50%,
+    transparent 50%, transparent 55%,
+    rgba(255, 204, 0, 0.8) 55%, rgba(255, 204, 0, 0.8) 60%,
+    transparent 60%, transparent 65%,
+    rgba(255, 204, 0, 0.8) 65%, rgba(255, 204, 0, 0.8) 70%,
+    transparent 70%, transparent 75%,
+    rgba(255, 204, 0, 0.8) 75%, rgba(255, 204, 0, 0.8) 80%,
+    transparent 80%, transparent 85%,
+    rgba(255, 204, 0, 0.8) 85%, rgba(255, 204, 0, 0.8) 90%,
+    transparent 90%, transparent 95%,
+    rgba(255, 204, 0, 0.8) 95%, rgba(255, 204, 0, 0.8) 100%
+  );
+  animation: pixelShift 2s linear infinite;
+}
+
+@keyframes pixelShift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 0;
+  }
+}
+
+/* Flicker effect para textos tecnológicos */
+.text-flicker {
+  animation: textFlicker 4s infinite alternate;
+}
+
+@keyframes textFlicker {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.8;
+  }
+  94% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.5;
+  }
+  98% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Efeito scanline para o header */
+.scanline {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  opacity: 0.3;
+  animation: scanline 6s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}

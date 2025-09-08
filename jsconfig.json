@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "hardhat.config.js",
+    "scripts/**/*.js",
+    "test/**/*.js",
+    "node_modules"
+  ]
+}

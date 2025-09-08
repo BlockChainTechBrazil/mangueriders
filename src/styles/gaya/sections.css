@@ -1,0 +1,52 @@
+/* Ajustes específicos para seções da landing page GAYA */
+
+/* Espaçamento para as seções */
+#hero {
+  min-height: 80vh; /* Reduzido ainda mais para 80vh */
+  padding-top: 20vh; /* Aumentado para dar mais espaço inicial */
+  margin-bottom: 20vh; /* Espaço adicional após a seção hero */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+#about, #tokenomics, #roadmap, #community, #faq {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Impede que as seções "flutuem" */
+.gaya-section {
+  transform-style: flat;
+}
+
+/* Ajuste para impedir scroll automático - melhorado */
+.prevent-auto-scroll {
+  scroll-behavior: auto !important;
+  overflow-anchor: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+}
+
+/* Ajuste para posição inicial - melhorado */
+.landing-container {
+  scroll-padding-top: 0;
+  transform: translateZ(0);
+  height: 100vh; /* Forçar altura fixa */
+  position: relative;
+  perspective: 5px; /* Reduzido de 10px para 5px */
+}
+
+/* Desativa comportamento de scroll suave no body durante carregamento */
+body.loading-gaya {
+  overflow: hidden;
+}

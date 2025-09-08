@@ -1,0 +1,576 @@
+/* Estilos customizados para replicar o Chumbi Valley */
+
+/* Fonte personalizada similar ao Chumbi Valley */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* Reset e base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Fonte para títulos principais (similar ao logo Chumbi Valley) */
+.chumbi-title {
+  font-family: 'Fredoka One', cursive;
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+/* Efeitos de texto 3D */
+.text-3d {
+  text-shadow: 
+    2px 2px 0px #2d3748,
+    4px 4px 0px #1a202c,
+    6px 6px 0px #000000,
+    8px 8px 15px rgba(0,0,0,0.3);
+}
+
+/* Efeitos de borda cartoon */
+.cartoon-border {
+  border: 4px solid;
+  border-radius: 12px;
+  box-shadow: 
+    0 4px 0px rgba(0,0,0,0.2),
+    0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* Animações de hover para botões */
+.cartoon-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.cartoon-button:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 
+    0 6px 0px rgba(0,0,0,0.2),
+    0 12px 25px rgba(0,0,0,0.15);
+}
+
+.cartoon-button:active {
+  transform: scale(0.98) translateY(1px);
+  box-shadow: 
+    0 2px 0px rgba(0,0,0,0.2),
+    0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Efeitos de paralaxe */
+.parallax-bg {
+  will-change: transform;
+}
+
+/* Animações de entrada */
+.slide-in-up {
+  animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.fade-in {
+  animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Efeitos de flutuação */
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.float-delayed {
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Efeitos de pulsação */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(72, 187, 120, 0.8);
+  }
+}
+
+/* Gradientes personalizados */
+.bg-chumbi-sky {
+  background: linear-gradient(180deg, #4299e1 0%, #63b3ed 50%, #48bb78 100%);
+}
+
+.bg-chumbi-forest {
+  background: linear-gradient(180deg, #48bb78 0%, #38a169 50%, #2f855a 100%);
+}
+
+.bg-chumbi-sunset {
+  background: linear-gradient(180deg, #ed8936 0%, #f6ad55 50%, #fbd38d 100%);
+}
+
+/* Efeitos de brilho */
+.glow-green {
+  box-shadow: 0 0 20px rgba(72, 187, 120, 0.4);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(66, 153, 225, 0.4);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px rgba(237, 137, 54, 0.4);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(159, 122, 234, 0.4);
+}
+
+/* Efeitos de rotação suave */
+.rotate-slow {
+  animation: rotateSlow 20s linear infinite;
+}
+
+@keyframes rotateSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Efeitos de ondulação */
+.wave {
+  animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+  .chumbi-title {
+    font-size: 3rem;
+  }
+  
+  .text-3d {
+    text-shadow: 
+      1px 1px 0px #2d3748,
+      2px 2px 0px #1a202c,
+      3px 3px 0px #000000,
+      4px 4px 8px rgba(0,0,0,0.3);
+  }
+  
+  .cartoon-border {
+    border-width: 3px;
+    border-radius: 8px;
+  }
+}
+
+/* Efeitos especiais para elementos interativos */
+.interactive-element {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.interactive-element:hover {
+  filter: brightness(1.1) saturate(1.2);
+}
+
+/* Estilo para scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #48bb78, #38a169);
+  border-radius: 6px;
+  border: 2px solid #2d3748;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #38a169, #2f855a);
+}
+
+/* Efeitos de partículas flutuantes */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleFloat 6s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(90deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-10px) rotate(180deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-30px) translateX(5px) rotate(270deg);
+    opacity: 0.9;
+  }
+}
+
+/* Efeitos de loading */
+.loading-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+
+/* Otimizações de Performance */
+
+/* Reduzir repaint e reflow */
+.optimized-transform {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* GPU acceleration para animações */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+}
+
+/* Lazy loading para imagens */
+.lazy-image {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.lazy-image.loaded {
+  opacity: 1;
+}
+
+/* Otimização para dispositivos móveis */
+@media (max-width: 768px) {
+  /* Reduzir complexidade de animações em mobile */
+  .particle {
+    display: none;
+  }
+  
+  .parallax-bg {
+    transform: none !important;
+  }
+  
+  /* Simplificar efeitos de hover em touch devices */
+  .cartoon-button:hover {
+    transform: none;
+  }
+  
+  .cartoon-button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Reduzir número de elementos animados */
+  .float:nth-child(n+6) {
+    animation: none;
+  }
+  
+  /* Otimizar fontes para mobile */
+  .chumbi-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  
+  .text-3d {
+    text-shadow: 
+      1px 1px 0px #2d3748,
+      2px 2px 0px #1a202c,
+      3px 3px 5px rgba(0,0,0,0.3);
+  }
+}
+
+/* Otimizações para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .particle {
+    animation-duration: 8s;
+  }
+  
+  .chumbi-title {
+    font-size: 4rem;
+  }
+}
+
+/* Otimizações para telas grandes */
+@media (min-width: 1920px) {
+  .particle {
+    animation-duration: 4s;
+  }
+  
+  .parallax-bg {
+    transform-style: preserve-3d;
+  }
+}
+
+/* Prefers-reduced-motion para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .parallax-bg {
+    transform: none !important;
+  }
+  
+  .particle {
+    display: none;
+  }
+  
+  .float,
+  .float-delayed {
+    animation: none;
+  }
+}
+
+/* Otimização de scroll */
+.scroll-optimized {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Otimização de imagens */
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  loading: lazy;
+}
+
+/* Otimização de gradientes */
+.optimized-gradient {
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Reduzir motion blur em dispositivos lentos */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .motion-blur {
+    filter: none !important;
+  }
+}
+
+/* Otimização de z-index */
+.z-layer-1 { z-index: 1; }
+.z-layer-2 { z-index: 2; }
+.z-layer-3 { z-index: 3; }
+.z-layer-4 { z-index: 4; }
+.z-layer-5 { z-index: 5; }
+
+/* Contenção de layout */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+/* Otimização de fontes */
+@font-display: swap;
+
+/* Critical CSS inline para above-the-fold */
+.critical-above-fold {
+  font-display: swap;
+  contain: layout style paint;
+}
+
+/* Intersection Observer optimizations */
+.intersection-root {
+  overflow: hidden;
+  position: relative;
+}
+
+/* Throttle scroll events */
+.scroll-container {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+/* Reduce paint complexity */
+.simple-shadow {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.complex-shadow {
+  box-shadow: 
+    0 1px 3px rgba(0,0,0,0.12),
+    0 1px 2px rgba(0,0,0,0.24);
+}
+
+/* Optimize transforms */
+.transform-optimized {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Memory optimization */
+.memory-efficient {
+  contain: strict;
+  content-visibility: auto;
+  contain-intrinsic-size: 300px;
+}
+
+/* Reduce reflow */
+.no-reflow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Optimize animations for 60fps */
+@keyframes optimizedFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+.optimized-float {
+  animation: optimizedFloat 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Reduce composite layers */
+.composite-layer {
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+/* Optimize for different connection speeds */
+@media (prefers-reduced-data: reduce) {
+  .particle {
+    display: none;
+  }
+  
+  .complex-animation {
+    animation: none;
+  }
+  
+  .high-quality-image {
+    display: none;
+  }
+  
+  .low-quality-fallback {
+    display: block;
+  }
+}
+
+/* Battery optimization */
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
+  .battery-intensive {
+    animation-play-state: paused;
+  }
+  
+  .gpu-heavy {
+    filter: none;
+    transform: none;
+  }
+}
+

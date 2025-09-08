@@ -1,0 +1,120 @@
+/* 
+ * Efeitos visuais do carnaval de Recife para a landing page GAYA 
+ * Inclui estilos para confetes, imagens de Recife e efeitos de animação
+ */
+
+/* Efeito de confete animado */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  z-index: 5;
+  animation: fall linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translate3d(0, -100px, 0) rotate(0deg);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--travel-x, 0), calc(100vh + 150px), 0) rotate(var(--rotation, 360deg));
+    opacity: 0;
+  }
+}
+
+/* Cores dos confetes baseadas na paleta de GAYA */
+.confetti-orange { background-color: #FF5A00; }
+.confetti-blue { background-color: #00B2FF; }
+.confetti-yellow { background-color: #FFCC00; }
+.confetti-pink { background-color: #FF00AA; }
+.confetti-purple { background-color: #A200FF; }
+.confetti-green { background-color: #00D95F; }
+
+/* Formatos diferentes para os confetes */
+.confetti-square { border-radius: 0; }
+.confetti-circle { border-radius: 50%; }
+.confetti-triangle {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  background-color: transparent;
+}
+.confetti-triangle.confetti-orange { border-bottom: 8px solid #FF5A00; }
+.confetti-triangle.confetti-blue { border-bottom: 8px solid #00B2FF; }
+.confetti-triangle.confetti-yellow { border-bottom: 8px solid #FFCC00; }
+.confetti-triangle.confetti-pink { border-bottom: 8px solid #FF00AA; }
+.confetti-triangle.confetti-purple { border-bottom: 8px solid #A200FF; }
+.confetti-triangle.confetti-green { border-bottom: 8px solid #00D95F; }
+
+/* Efeito de sombra colorida para textos */
+.text-shadow-carnival {
+  text-shadow: 
+    0 0 15px rgba(255, 90, 0, 0.5),
+    0 0 25px rgba(0, 178, 255, 0.5),
+    0 0 35px rgba(255, 204, 0, 0.5);
+}
+
+/* Container para imagens em destaque de Recife */
+.recife-images-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Estilo para imagens flutuantes de Recife */
+.recife-image {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  opacity: 0.7;
+  pointer-events: none;
+  transform: rotate(var(--rotation, 0deg));
+  animation: float calc(var(--float-time, 10) * 1s) infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(var(--rotation, 0deg));
+  }
+  50% {
+    transform: translate(var(--float-x, 10px), var(--float-y, -10px)) rotate(calc(var(--rotation, 0deg) + 2deg));
+  }
+}
+
+/* Efeito de drop shadow para highlights */
+.drop-shadow-glow {
+  filter: drop-shadow(0 0 8px rgba(255, 90, 0, 0.6)) 
+         drop-shadow(0 0 12px rgba(255, 204, 0, 0.4));
+}
+
+/* Vídeo de fundo com overlay */
+.carnival-video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.15;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .recife-image {
+    max-width: 120px;
+    opacity: 0.5;
+  }
+}
