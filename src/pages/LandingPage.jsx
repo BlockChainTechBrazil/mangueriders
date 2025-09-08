@@ -100,6 +100,7 @@ function LandingPage() {
             <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-green-400 via-blue-500 to-teal-500 bg-clip-text text-transparent animate-pulse drop-shadow-lg">
               MANGUE RIDERS
             </h1>
+            
             <div className="bg-green-400/90 backdrop-blur-sm text-black p-6 rounded-lg border-4 border-green-600 shadow-2xl max-w-4xl mx-4 transform hover:scale-105 transition-all duration-300">
               <p className="text-lg md:text-xl font-bold leading-relaxed">
                 EM RECIFE, O MANGUE ESTÁ SENDO POLUÍDO POR EMPRESÁRIOS GANANCIOSOS. MAS NÃO ESTÁ PERDIDO.
