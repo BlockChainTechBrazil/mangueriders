@@ -9,9 +9,10 @@ import useGameStore from '../../game/store/gameStore'; // Importar o gameStore
 interface BlockProps {
   position: [number, number, number];
   type: CellType; // Changed from color to type
+  hp?: number; // para blocos do tipo árvore (breakable)
 }
 
-const Block: React.FC<BlockProps> = ({ position, type }) => {
+const Block: React.FC<BlockProps> = ({ position, type, hp = 1 }) => {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [hovered, setHovered] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -28,7 +29,7 @@ const Block: React.FC<BlockProps> = ({ position, type }) => {
     }, 300); // Aumentado para 300ms
     return () => clearTimeout(timer);
   }, []);
-  
+
   // Garantir que o bloco seja carregado imediatamente se já estiver em um estado pronto
   useEffect(() => {
     if (meshRef.current && !loaded) {
@@ -50,7 +51,7 @@ const Block: React.FC<BlockProps> = ({ position, type }) => {
       // Leve rotação para dar mais vida aos blocos destrutíveis
       meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
     }
-    
+
     // Adiciona leve animação de pulsação para os blocos fixos (menos perceptível)
     if (type === CellType.Wall && meshRef.current) {
       // Leve "respiração" para blocos fixos
@@ -63,11 +64,12 @@ const Block: React.FC<BlockProps> = ({ position, type }) => {
   const blockOpacity = 1;
   let blockRoughness = 0.5;
   let blockMetalness = 0.2;
+  // Dimensões baseadas em HP para dar variação visual às árvores
   let blockHeight = 1; // Altura padrão do bloco
   let blockWidth = 1;  // Largura padrão do bloco
   let blockDepth = 1;  // Profundidade padrão do bloco
   let blockTexture = null;
-  
+
   if (type === CellType.Wall) {
     // BLOCO FIXO - COR ESCURA GARANTIDA - ignorando mapData para garantir consistência
     blockColor = "#444444"; // Cinza escuro para blocos fixos (ligeiramente mais claro)
@@ -80,10 +82,11 @@ const Block: React.FC<BlockProps> = ({ position, type }) => {
         blockEmissive = new THREE.Color(fallbackMapData.solidBlockEmissive);
       } else {
         blockEmissive = fallbackMapData.solidBlockEmissive;
-      }    } else {
+      }
+    } else {
       blockEmissive = new THREE.Color(0x000000);
     }
-    
+
     // BLOCO FIXO - Maior que os quebráveis, com espaço entre eles
     blockHeight = 0.85;  // Altura aumentada para blocos fixos
     blockWidth = 0.85;   // Largura reduzida para deixar espaço entre blocos
@@ -96,13 +99,16 @@ const Block: React.FC<BlockProps> = ({ position, type }) => {
     // Define uma cor emissiva fixa para garantir o destaque visual
     // Intensifica o brilho ao passar o mouse - ignorando mapData para garantir consistência
     blockEmissive = hovered ? new THREE.Color(0x441100) : new THREE.Color(0x210800);
-    
-    // Bloco quebrável menor que os fixos
-    blockHeight = 0.8;  // Altura média para blocos destrutíveis
-    blockWidth = 0.8;   // Largura um pouco menor que os fixos    
-    blockDepth = 0.8;   // Profundidade um pouco menor que os fixos
+
+    // Ajusta dimensão com base no HP (árvore maior tem mais HP)
+    blockHeight = 0.6 + 0.25 * hp;  // 0.85 para hp=1, 1.1 para hp=2, 1.35 para hp=3
+    blockWidth = 0.6 + 0.15 * hp;
+    blockDepth = 0.6 + 0.15 * hp;
+
+    // Cor mais verde para representar mangue/árvore
+    blockColor = hp >= 3 ? '#2E8B57' : (hp === 2 ? '#55AA66' : '#8BC34A');
   }
-  
+
   // Ajustar a posição para compensar as dimensões e garantir alinhamento correto
   const adjustedPosition: [number, number, number] = [
     position[0],
@@ -115,40 +121,40 @@ const Block: React.FC<BlockProps> = ({ position, type }) => {
   // Não renderizar nada até que esteja completamente carregado
   if (!loaded) return null;
 
-  return (    <mesh
-      position={adjustedPosition}
-      ref={meshRef}
-      castShadow
-      receiveShadow
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <boxGeometry args={[blockWidth, blockHeight, blockDepth]} />
-      <meshStandardMaterial
-        color={blockColor}
-        opacity={blockOpacity}
-        roughness={blockRoughness}
-        metalness={blockMetalness}
-        emissive={blockEmissive}
-        // Adiciona detalhes visuais aos blocos
-        {...(type === CellType.Wall && {
-          bumpScale: 0.03,
-          flatShading: true,
-          wireframe: false,
-          shadowSide: THREE.FrontSide,
-          // Destacar os blocos fixos com um efeito de borda sutil
-          envMapIntensity: 0.8
-        })}
-        {...(type === CellType.Breakable && {
-          bumpScale: 0.05,
-          flatShading: false,
-          // Adicionar brilho aos blocos quebráveis
-          envMapIntensity: 1.2,
-          clearcoat: 0.2, // Leve efeito de verniz
-          clearcoatRoughness: 0.3
-        })}
-      />
-    </mesh>
+  return (<mesh
+    position={adjustedPosition}
+    ref={meshRef}
+    castShadow
+    receiveShadow
+    onPointerOver={() => setHovered(true)}
+    onPointerOut={() => setHovered(false)}
+  >
+    <boxGeometry args={[blockWidth, blockHeight, blockDepth]} />
+    <meshStandardMaterial
+      color={blockColor}
+      opacity={blockOpacity}
+      roughness={blockRoughness}
+      metalness={blockMetalness}
+      emissive={blockEmissive}
+      // Adiciona detalhes visuais aos blocos
+      {...(type === CellType.Wall && {
+        bumpScale: 0.03,
+        flatShading: true,
+        wireframe: false,
+        shadowSide: THREE.FrontSide,
+        // Destacar os blocos fixos com um efeito de borda sutil
+        envMapIntensity: 0.8
+      })}
+      {...(type === CellType.Breakable && {
+        bumpScale: 0.05,
+        flatShading: false,
+        // Adicionar brilho aos blocos quebráveis
+        envMapIntensity: 1.2,
+        clearcoat: 0.2, // Leve efeito de verniz
+        clearcoatRoughness: 0.3
+      })}
+    />
+  </mesh>
   );
 };
 

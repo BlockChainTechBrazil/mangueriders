@@ -15,6 +15,9 @@ export enum CellType {
   ENEMY = 6,
   POWERUP_BOMB_RANGE = 7,    // Power-up para alcance da bomba
   POWERUP_MAX_BOMBS = 8      // Power-up para mais bombas
+  ,
+  // Água - áreas não navegáveis que serão renderizadas como lagoas/mangue
+  Water = 9
 }
 
 export interface BombData {

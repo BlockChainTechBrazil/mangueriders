@@ -1,5 +1,7 @@
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei'; // Adicionado PerspectiveCamera
-import { useState, useEffect, useCallback, useRef } from 'react'; // Adicionado useRef
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'; // Adicionado useRef, useMemo
+import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 import Block from './Block';
 import Player from './Player';
 import BombComponent from './Bomb';
@@ -14,14 +16,15 @@ import { MapType, getMapById, DEFAULT_MAP } from './maps'; // Importar sistema d
 import useGameStore from '../../game/store/gameStore';
 import { EnemyType, getEnemiesForMap } from './enemyTypes'; // Importar tipos de inimigos
 
-// Dimensões do grid conforme especificado (13x11)
-const GRID_COLUMNS = 19;
-const GRID_ROWS = 15;
+// Dimenses do grid aumentado para mapa maior
+const GRID_COLUMNS = 25;
+const GRID_ROWS = 19;
 const CELL_SIZE = 1; // Tamanho de cada célula no espaço 3D
 
 // Posição inicial do jogador no grid (índices da matriz)
-const PLAYER_START_ROW = 1;
-const PLAYER_START_COL = 1;
+// Muda para começar no canto inferior-esquerdo do mapa
+const PLAYER_START_ROW = GRID_ROWS - 2; // uma célula acima da borda inferior
+const PLAYER_START_COL = 1; // canto esquerdo
 
 // Constantes para bombas
 const BOMB_FUSE_TIME = 3000; // 3 segundos para explodir
@@ -40,8 +43,31 @@ const POWERUP_SPAWN_CHANCE = 0.3; // 30% de chance de um power-up aparecer
 const INITIAL_ENEMY_COUNT = 5;
 const ENEMY_MOVE_INTERVAL = 1500; // Inimigos tentam se mover a cada 1.5 segundos
 
-// Novas constantes para a câmera
-const CAMERA_ALTITUDE = 18; // Altura ajustada para 16 conforme solicitado
+// Configuração da câmera (edite aqui para ajustar rapidamente)
+const CAMERA_CONFIG = {
+  // Altura da câmera (Y) — menor = mais próxima
+  altitude: 8,
+  // Deslocamento lateral inicial em X (positivo para direita, negativo para esquerda)
+  // Ajustado para -2 para mover a câmera mais para a direita (mais centralizada)
+  initialLateralOffset: -2,
+  // Multiplicador aplicado a Math.max(GRID_ROWS, GRID_COLUMNS) para calcular
+  // o offset inicial de profundidade (Z). Valores menores deixam a câmera mais próxima.
+  offsetMultiplier: 0.35,
+  // Campo de visão
+  fov: 80,
+  // Distâncias de zoom permitidas
+  minDistance: 1,
+  maxDistance: 25,
+  // Lerp factors (seguimento suave) — maiores = segue mais rápido
+  followLerpTargetFactor: 6,
+  followLerpCameraFactor: 4,
+  // Limites de ângulo polar para evitar inversão
+  minPolarAngle: 0.2,
+  maxPolarAngle: Math.PI / 2.2,
+  // Velocidade de rotação/pan do OrbitControls
+  rotateSpeed: 1.2,
+  panSpeed: 1.1
+};
 
 interface ExplosionData {
   id: string;
@@ -58,30 +84,55 @@ const createInitialGrid = (enemiesInitial: EnemyData[]): CellType[][] => { // Re
     enemyPositions.set(`${enemy.row}-${enemy.col}`, true);
   });
 
+  // Gerar zonas de água/orgânicas e blocos destrutíveis de forma menos rígida
+  // Estratégia: gerar um mapa de alturas/ruído simples por célula para variar tipos.
   for (let r = 0; r < GRID_ROWS; r++) {
     grid[r] = [];
     for (let c = 0; c < GRID_COLUMNS; c++) {
       const cellKey = `${r}-${c}`;
       const isEnemyCell = enemyPositions.has(cellKey);
 
-      if (isEnemyCell) {
-        grid[r][c] = CellType.ENEMY; // Marcar célula como contendo inimigo (valor 6)
-      } else if (r === 0 || r === GRID_ROWS - 1 || c === 0 || c === GRID_COLUMNS - 1) {
-        grid[r][c] = CellType.Wall; // Paredes nas bordas
-      } else if (r % 2 === 0 && c % 2 === 0) {
-        grid[r][c] = CellType.Wall; // Padrão fixo de blocos sólidos
-      } else if (
-        (r > 0 && r < GRID_ROWS - 1 && c > 0 && c < GRID_COLUMNS - 1) && // Evitar bordas para blocos destrutíveis
-        !((r === PLAYER_START_ROW && c === PLAYER_START_COL) || // Posição inicial do jogador
-          (r === PLAYER_START_ROW && c === PLAYER_START_COL + 1) || // Adjacente
-          (r === PLAYER_START_ROW + 1 && c === PLAYER_START_COL)) && // Adjacente
-        !isEnemyCell && // Garantir que não seja uma célula com inimigo
-        Math.random() < 0.6 // 60% de chance de ser um bloco destrutível
-      ) {
-        grid[r][c] = CellType.Breakable;
-      } else {
-        grid[r][c] = CellType.Empty;
+      // Bordas como parede sólida
+      if (r === 0 || r === GRID_ROWS - 1 || c === 0 || c === GRID_COLUMNS - 1) {
+        grid[r][c] = CellType.Wall;
+        continue;
       }
+
+      // Evitar o spawn sobre o jogador
+      if ((r === PLAYER_START_ROW && c === PLAYER_START_COL) ||
+        (r === PLAYER_START_ROW && c === PLAYER_START_COL + 1) ||
+        (r === PLAYER_START_ROW + 1 && c === PLAYER_START_COL)) {
+        grid[r][c] = CellType.Empty;
+        continue;
+      }
+
+      if (isEnemyCell) {
+        grid[r][c] = CellType.ENEMY;
+        continue;
+      }
+
+      // Usar uma geração simples para água e árvores sem padrão em x/y parity
+      const noise = Math.random();
+
+      // 12% de água, espalhada aleatoriamente, preferindo áreas internas
+      if (noise < 0.12 && r > 1 && r < GRID_ROWS - 2 && c > 1 && c < GRID_COLUMNS - 2) {
+        grid[r][c] = CellType.Water;
+        continue;
+      }
+
+      // 50% chance de árvore/destrutível nas áreas internas (mas menos denso que antes)
+      if (noise < 0.62 && Math.random() < 0.55) {
+        grid[r][c] = CellType.Breakable;
+        continue;
+      }
+
+      // Pequena chance de bloco sólido interno (para criar obstáculos maiores)
+      if (noise > 0.95) {
+        grid[r][c] = CellType.Wall;
+        continue;
+      }
+
+      grid[r][c] = CellType.Empty;
     }
   }
 
@@ -219,15 +270,18 @@ const processSingleBombExplosion = (
   const affectedCells: { row: number; col: number }[] = [];
   const explosionEffects: ExplosionData[] = [];
   const powerUpsToSpawn: { type: CellType; row: number, col: number }[] = [];
-  const currentBombRange = bombToExplde.range;
+  // range tratado defensivamente abaixo (currentRange)
 
   // Adiciona a célula central da bomba nas células afetadas para verificação de dano
-  affectedCells.push({ row: bombToExplde.row, col: bombToExplde.col });
+  const centerRow = bombToExplde.row ?? 0;
+  const centerCol = bombToExplde.col ?? 0;
+  const currentRange = bombToExplde.range ?? INITIAL_BOMB_RANGE;
+  affectedCells.push({ row: centerRow, col: centerCol });
 
   // Adiciona efeito de explosão visual para a célula central da bomba
   explosionEffects.push({
-    id: `explosion-${bombToExplde.id}-${bombToExplde.row}-${bombToExplde.col}-center-${Date.now()}-${Math.random()}`,
-    position: get3DPosition(bombToExplde.col, bombToExplde.row),
+    id: `explosion-${bombToExplde.id}-${centerRow}-${centerCol}-center-${Date.now()}-${Math.random()}`,
+    position: get3DPosition(centerCol, centerRow),
   });
 
   // Apenas as 4 direções (excluindo o centro para evitar duplicação)
@@ -239,9 +293,9 @@ const processSingleBombExplosion = (
   ];
 
   for (const dir of directions) {
-    for (let i = 1; i <= currentBombRange; i++) {
-      const targetRow = bombToExplde.row + dir.r * i;
-      const targetCol = bombToExplde.col + dir.c * i;
+    for (let i = 1; i <= currentRange; i++) {
+      const targetRow = centerRow + dir.r * i;
+      const targetCol = centerCol + dir.c * i;
 
       if (targetRow >= 0 && targetRow < GRID_ROWS && targetCol >= 0 && targetCol < GRID_COLUMNS) {
         const cellTypeInPath = newGrid[targetRow][targetCol]; // Tipo da célula no caminho da explosão
@@ -308,6 +362,24 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
     gridRef.current = grid;
   }, [grid]);
 
+  // Mapa de vida das "árvores" (blocos Breakable) — chave "row-col" => hp (1..3)
+  const createInitialTreeHealth = (g: CellType[][]) => {
+    const map: Record<string, number> = {};
+    for (let r = 0; r < g.length; r++) {
+      for (let c = 0; c < g[r].length; c++) {
+        if (g[r][c] === CellType.Breakable) {
+          // aleatório 1..3 para tamanhos diferentes
+          map[`${r}-${c}`] = Math.random() < 0.33 ? 3 : (Math.random() < 0.5 ? 2 : 1);
+        }
+      }
+    }
+    return map;
+  };
+
+  const [treeHealthMap, setTreeHealthMap] = useState<Record<string, number>>(() => createInitialTreeHealth(grid));
+  const treeHealthMapRef = useRef(treeHealthMap);
+  useEffect(() => { treeHealthMapRef.current = treeHealthMap; }, [treeHealthMap]);
+
   const [playerPosition, setPlayerPosition] = useState<[number, number]>([PLAYER_START_COL, PLAYER_START_ROW]);
   const playerPositionRef = useRef(playerPosition);
   // Estado para gerenciar a movimentação visual do jogador
@@ -366,23 +438,25 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
   useEffect(() => {
     isGameOverRef.current = isGameOver;
   }, [isGameOver]);
-  const gridCenterX = (GRID_COLUMNS * CELL_SIZE) / 2;
-  const gridCenterZ = (GRID_ROWS * CELL_SIZE) / 5;
+  // Centro do tabuleiro (usar (N-1)/2 para centralizar sobre as células 0..N-1)
+  const boardCenterX = ((GRID_COLUMNS - 1) * CELL_SIZE) / 2;
+  const boardCenterZ = ((GRID_ROWS - 1) * CELL_SIZE) / 2;
 
-  // Calcular a posição X e Z da câmera com base nos fatores de deslocamento
-  const cameraX = gridCenterX; // Centralizamos a câmera horizontalmente
-  const cameraZ = gridCenterZ + 10; // Mantemos um offset para posicionar a câmera atrás do grid para ver melhor
+  // Calcular a posição X e Z da câmera com base no centro do tabuleiro usando CAMERA_CONFIG
+  const cameraX = boardCenterX + CAMERA_CONFIG.initialLateralOffset; // Centralizamos a câmera horizontalmente com deslocamento lateral
+  const cameraZ = boardCenterZ + Math.max(GRID_ROWS, GRID_COLUMNS) * CAMERA_CONFIG.offsetMultiplier;
 
-  // Acessar as funções do gameStore
-  const {
-    setPlayerCharacter,
-    setPlayerPosition: updateGlobalPlayerPosition,
-    addPlayerBomb,
-    increaseBombRange,
-    setGameState,
-    removeEnemy, // Função que atualiza o score ao remover inimigos
-    gameState // Acessar o estado atual do jogo
-  } = useGameStore();
+  // Acessar as funções/valores do gameStore com seletores individuais e memoizar objetos para evitar re-subscriptions
+  const setGameState = useGameStore((s: any) => s.setGameState);
+  const removeEnemy = useGameStore((s: any) => s.removeEnemy);
+  const setScore = useGameStore((s: any) => s.setScore);
+  const setPlayer = useGameStore((s: any) => s.setPlayer);
+  const gameState = useGameStore((s: any) => s.gameState);
+  // Seletores adicionais usados internamente (primitivos estáveis)
+  const playerScore = useGameStore((s: any) => s.player?.score ?? 0);
+
+  // Memoizar o finalMapData para evitar criar um novo objeto em cada render
+  const memoFinalMapData = useMemo(() => finalMapData, [finalMapData]);
 
   // Adicionar um efeito para escutar mudanças no gameState
   useEffect(() => {
@@ -398,6 +472,8 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
       // Recriar grid
       const newGrid = createInitialGrid(newEnemies);
       setGrid(newGrid);
+      // Recriar mapa de vida das árvores
+      setTreeHealthMap(() => createInitialTreeHealth(newGrid));
 
       // Resetar posição do jogador
       setPlayerPosition([PLAYER_START_COL, PLAYER_START_ROW]);
@@ -443,6 +519,94 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
       CELL_SIZE * 0.7, // Aumentado para garantir visibilidade com câmera baixa
       row * CELL_SIZE
     ];
+  }, []);
+
+  // Camera and controls refs
+  const cameraRef = useRef<any>(null);
+  const controlsRef = useRef<any>(null);
+  const userInteractingRef = useRef<boolean>(false);
+  const cameraOffsetRef = useRef<THREE.Vector3 | null>(null);
+
+  // useFrame para atualizar a câmera/controles suavemente seguindo o jogador
+  useFrame((_, delta) => {
+    if (!cameraRef.current || !controlsRef.current) return;
+
+    // posição do jogador em 3D
+    const [pX, pY, pZ] = get3DPosition(playerPositionRef.current[0], playerPositionRef.current[1]);
+
+    // Atualiza o target dos controles para o jogador com lerp (suaviza o movimento do centro de rotação)
+    try {
+      const desiredTarget = new THREE.Vector3(pX, pY + 0.4, pZ);
+      controlsRef.current.target.lerp(desiredTarget, Math.min(1, CAMERA_CONFIG.followLerpTargetFactor * delta));
+    } catch (e) {
+      // silent
+    }
+
+    // Se não temos um offset inicial, calcule com base na posição atual da câmera
+    if (!cameraOffsetRef.current) {
+      const camPos = cameraRef.current.position;
+      cameraOffsetRef.current = new THREE.Vector3(camPos.x - pX, camPos.y - pY, camPos.z - pZ);
+    }
+
+    // Desejamos que a câmera fique sempre na posição player + offset (evita aplicar delta que cause inversão)
+    const desiredCameraPos = new THREE.Vector3(pX, pY, pZ).add(cameraOffsetRef.current!);
+
+    // Lerp da posição da câmera quando o usuário não está interagindo
+    if (!userInteractingRef.current) {
+      const lerpFactor = Math.min(1, CAMERA_CONFIG.followLerpCameraFactor * delta);
+      cameraRef.current.position.lerp(desiredCameraPos, lerpFactor);
+    }
+
+    // Atualiza controles
+    try { controlsRef.current.update(); } catch (e) { /* noop */ }
+  });
+
+  // Force initial camera position and controls target to board center once on mount
+  useEffect(() => {
+    if (cameraRef.current) {
+      // colocar a câmera acima e um pouco à frente do tabuleiro para uma visão centralizada
+      const offset = Math.max(GRID_ROWS, GRID_COLUMNS) * CAMERA_CONFIG.offsetMultiplier;
+      // Posicionar a câmera relativa à posição inicial do jogador para começar mais próxima
+      const [playerInitX, , playerInitZ] = get3DPosition(playerPositionRef.current[0], playerPositionRef.current[1]);
+      cameraRef.current.position.set(playerInitX + CAMERA_CONFIG.initialLateralOffset, CAMERA_CONFIG.altitude, playerInitZ + offset);
+      // garantir que o up vector esteja correto (evitar inversão)
+      cameraRef.current.up.set(0, 1, 0);
+      cameraRef.current.lookAt(boardCenterX, 0, boardCenterZ);
+      // Inicializar o cameraOffsetRef para que o follow use um offset consistente
+      const [pX, pY, pZ] = get3DPosition(playerPositionRef.current[0], playerPositionRef.current[1]);
+      cameraOffsetRef.current = new THREE.Vector3(cameraRef.current.position.x - pX, cameraRef.current.position.y - pY, cameraRef.current.position.z - pZ);
+    }
+    if (controlsRef.current) {
+      // Definir target inicial para o jogador em vez do centro do tabuleiro
+      const [playerInitX2, , playerInitZ2] = get3DPosition(playerPositionRef.current[0], playerPositionRef.current[1]);
+      controlsRef.current.target.set(playerInitX2, 0, playerInitZ2);
+      // Evitar que o usuário rotacione a câmera por baixo (inversion)
+      try {
+        controlsRef.current.maxPolarAngle = CAMERA_CONFIG.maxPolarAngle; // não permitir ir abaixo do horizonte
+        controlsRef.current.minPolarAngle = CAMERA_CONFIG.minPolarAngle; // evitar olhar diretamente de cima
+        controlsRef.current.update();
+      } catch (e) { /* noop */ }
+    }
+  }, []);
+
+  // Helper para gerenciar invencibilidade de forma consistente
+  const grantInvincibility = useCallback((duration = PLAYER_INVINCIBILITY_DURATION) => {
+    // Marca invencibilidade no state e no ref
+    setIsPlayerInvincible(true);
+    isPlayerInvincibleRef.current = true;
+
+    // Limpa timer anterior
+    if (invincibilityTimerRef.current) {
+      clearTimeout(invincibilityTimerRef.current);
+      invincibilityTimerRef.current = null;
+    }
+
+    // Agenda fim da invencibilidade
+    invincibilityTimerRef.current = window.setTimeout(() => {
+      setIsPlayerInvincible(false);
+      isPlayerInvincibleRef.current = false;
+      invincibilityTimerRef.current = null;
+    }, duration);
   }, []);
 
   const initiateExplosionChain = useCallback((bombIdToExplode: string) => {
@@ -548,13 +712,7 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
 
           if (playerLivesRef.current > 0) {
             if (playerLivesRef.current - 1 > 0) { // Só ativa invencibilidade se for sobreviver
-              setIsPlayerInvincible(true);
-              if (invincibilityTimerRef.current) clearTimeout(invincibilityTimerRef.current);
-              invincibilityTimerRef.current = window.setTimeout(() => {
-                setIsPlayerInvincible(false);
-                invincibilityTimerRef.current = null;
-
-              }, PLAYER_INVINCIBILITY_DURATION);
+              grantInvincibility();
             }
           }
           setPlayerLives(prevLives => {
@@ -692,8 +850,44 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
       collectedPowerUp = true;
     }    // Verifica colisões se não coletou power-up
     if (!collectedPowerUp) {
-      if (targetCellType === CellType.Wall || targetCellType === CellType.Breakable) {
-        return; // Colisão com bloco
+      // Bloquear movimento sobre água
+      if (targetCellType === CellType.Water) {
+        return; // Não permite andar sobre água
+      }
+      if (targetCellType === CellType.Wall) {
+        return; // Colisão com bloco sólido
+      }
+
+      // Se for uma árvore (Breakable), reduzir sua vida ao andar sobre ela
+      if (targetCellType === CellType.Breakable) {
+        const key = `${newRow}-${newCol}`;
+        const currentHp = treeHealthMapRef.current[key] ?? 1;
+        const newHp = Math.max(0, currentHp - 1);
+
+        setTreeHealthMap(prev => {
+          const next = { ...prev };
+          if (newHp <= 0) delete next[key]; else next[key] = newHp;
+          return next;
+        });
+
+        if (newHp <= 0) {
+          // Remove bloco do grid
+          setGrid(prevGrid => {
+            const nextGrid = prevGrid.map(r => [...r]);
+            nextGrid[newRow][newCol] = CellType.Empty;
+            return nextGrid;
+          });
+
+          // Atualiza score no store (ex: +10 por árvore limpa)
+          try {
+            if (typeof setScore === 'function') {
+              setScore(playerScore + 10);
+            }
+          } catch (e) {
+            // ignore se não for possível atualizar aqui
+          }
+        }
+        // Permite andar para a posição (já que estamos limpando)
       }
 
       const temBomba = bombsRef.current.some(b => b.col === newCol && b.row === newRow);
@@ -706,16 +900,7 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
 
           if (playerLivesRef.current > 0) {
             if (playerLivesRef.current - 1 > 0) {
-              setIsPlayerInvincible(true);
-              isPlayerInvincibleRef.current = true;
-              if (invincibilityTimerRef.current) {
-                clearTimeout(invincibilityTimerRef.current);
-              }
-              invincibilityTimerRef.current = window.setTimeout(() => {
-                setIsPlayerInvincible(false);
-                isPlayerInvincibleRef.current = false;
-                invincibilityTimerRef.current = null;
-              }, PLAYER_INVINCIBILITY_DURATION);
+              grantInvincibility();
             }
           } setPlayerLives(prevLives => {
             const newLives = prevLives - 1;
@@ -998,7 +1183,7 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
 
                 // Verificar se há uma bomba próxima que pode destruir um bloco
                 const hasBombNearby = activeBombs.some(bomb => {
-                  const distanceToEnemy = Math.abs(bomb.row - enemy.row) + Math.abs(bomb.col - enemy.col);
+                  const distanceToEnemy = Math.abs((bomb.row ?? enemy.row) - enemy.row) + Math.abs((bomb.col ?? enemy.col) - enemy.col);
                   return distanceToEnemy <= 2; // Bomba perto o suficiente para potencialmente destruir um bloco
                 });
 
@@ -1265,58 +1450,63 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
   //Removido para evitar duplicação
   // Atualizar o estado global do jogador quando os valores locais mudarem
   useEffect(() => {
-    // Atualizando os dados do jogador no store global
-    const player = useGameStore.getState().player;    // Atualiza o player no store
-    useGameStore.setState({
-      player: {
-        ...player,
+    // Atualizando somente os campos necessários do jogador no store global via setPlayer
+    if (typeof setPlayer === 'function') {
+      setPlayer({
         lives: playerLives,
         bombRange: playerBombRange,
         bombs: playerMaxBombs,
         isInvincible: isPlayerInvincible
-        // o score é mantido pois é gerenciado pelo gameStore
-      }
-    });
+      });
+    }
 
     // Verificar se todos os inimigos foram eliminados
     if (enemies.length === 0 && !isGameOver) {
-
-      setGameState('levelComplete');
+      if (gameState !== 'levelComplete') setGameState('levelComplete');
     }
     // Se o jogo acabar, atualize o estado do jogo
     else if (isGameOver) {
-      setGameState('gameOver');
+      if (gameState !== 'gameOver') setGameState('gameOver');
     }
 
-
-  }, [playerLives, isPlayerInvincible, isGameOver, playerBombRange, playerMaxBombs]);
+  }, [playerLives, isPlayerInvincible, isGameOver, playerBombRange, playerMaxBombs, enemies.length, gameState, setPlayer, setGameState]);
 
   return (
     <>
       {/* Cena 3D - só renderiza elementos do jogo quando o estado for 'playing', 'paused', 'gameOver' ou 'levelComplete' */}
       {/* Configuração de câmera similar ao código de referência */}
+      {/* Câmera que segue o jogador de perto (quase primeira pessoa) */}
       <PerspectiveCamera
+        ref={cameraRef}
         makeDefault
-        fov={50} // Campo de visão um pouco mais fechado para compensar a menor altura
+        fov={CAMERA_CONFIG.fov}
         aspect={window.innerWidth / window.innerHeight}
         near={0.1}
         far={1000}
-        position={[
-          cameraX,
-          CAMERA_ALTITUDE,
-          cameraZ
-        ]}
+        position={[cameraX, CAMERA_CONFIG.altitude, cameraZ]}
       />
 
+      {/* OrbitControls ativos: permitem zoom por scroll e movimentação por mouse */}
       <OrbitControls
-        target={[gridCenterX, 0, gridCenterZ + 4]} // Ajustado o ponto de mira para ver o jogo de um ângulo melhor
-        enableRotate={false} // Desabilita rotação para manter o ângulo fixo
-        enablePan={false} // Desabilita movimentação lateral
-        enableZoom={false} // Desabilita zoom para manter a vista fixa
+        ref={controlsRef}
+        enableRotate={true}
+        enablePan={true}
+        enableZoom={true}
+        enableDamping={true}
+        dampingFactor={0.08}
+        screenSpacePanning={false}
+        rotateSpeed={CAMERA_CONFIG.rotateSpeed}
+        panSpeed={CAMERA_CONFIG.panSpeed}
+        // mouseButtons padrão (LEFT=ORBIT, MIDDLE=ZOOM, RIGHT=PAN)
+        // touchActions: usar dois dedos para pan
+        minDistance={CAMERA_CONFIG.minDistance}
+        maxDistance={CAMERA_CONFIG.maxDistance}
+        onStart={() => { userInteractingRef.current = true; }}
+        onEnd={() => { setTimeout(() => { userInteractingRef.current = false; }, 600); }}
       />
 
       {/* @ts-ignore - ambientLight é um componente válido do Three.js/React-Three-Fiber */}
-      <ambientLight intensity={finalMapData.ambientLightIntensity} color={finalMapData.ambientLightColor} />
+      <ambientLight intensity={memoFinalMapData.ambientLightIntensity} color={memoFinalMapData.ambientLightColor} />
       {/* @ts-ignore - directionalLight é um componente válido do Three.js/React-Three-Fiber */}
       <directionalLight intensity={1.2} castShadow />
       {/* Renderiza o jogo somente quando não estiver no menu */}
@@ -1325,20 +1515,34 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
         <>
           {/* Plano de Chão com cor baseada no mapa selecionado */}
           {/* @ts-ignore */}
-          <mesh receiveShadow position={[gridCenterX - CELL_SIZE / 2, -0.05, gridCenterZ - CELL_SIZE / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+          <mesh receiveShadow position={[boardCenterX - CELL_SIZE / 2, -0.05, boardCenterZ - CELL_SIZE / 2]} rotation={[-Math.PI / 2, 0, 0]}>
             {/* @ts-ignore */}
-            <planeGeometry args={[GRID_COLUMNS * CELL_SIZE * 2, GRID_ROWS * CELL_SIZE * 2]} />
+            {/* Ground plane tightly around the board with a small margin */}
+            <planeGeometry args={[(GRID_COLUMNS * CELL_SIZE) + 4, (GRID_ROWS * CELL_SIZE) + 4]} />
             {/* @ts-ignore */}
-            <meshStandardMaterial color={finalMapData.groundColor} />
+            <meshStandardMaterial color={memoFinalMapData.groundColor} />
             {/* @ts-ignore - mesh é um componente válido do Three.js/React-Three-Fiber */}
-          </mesh>          {/* Renderizamos apenas os blocos e power-ups que existem (sem nulos ou whitespace) */}
+          </mesh>
+
+          {/* Renderizamos apenas os blocos e power-ups que existem (sem nulos ou whitespace) */}
           {grid.flatMap((row, rIndex) =>
             row.flatMap((cellType, cIndex) => {
               const position3D = get3DPosition(cIndex, rIndex);
               const objects = [];
 
               if (cellType === CellType.Wall || cellType === CellType.Breakable) {
-                objects.push(<Block key={`block-${rIndex}-${cIndex}`} position={position3D} type={cellType} />);
+                const hp = treeHealthMapRef.current[`${rIndex}-${cIndex}`];
+                objects.push(<Block key={`block-${rIndex}-${cIndex}`} position={position3D} type={cellType} hp={hp} />);
+              }
+              else if (cellType === CellType.Water) {
+                // Renderizar um pequeno plano de água levemente abaixo do chão para visual
+                const [x, , z] = position3D;
+                objects.push(
+                  <mesh key={`water-${rIndex}-${cIndex}`} position={[x, 0.01, z]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[CELL_SIZE * 0.95, CELL_SIZE * 0.95]} />
+                    <meshStandardMaterial color="#2b6b4a" transparent opacity={0.9} />
+                  </mesh>
+                );
               }
               // NOVO: Renderizar PowerUps
               else if (cellType === CellType.POWERUP_BOMB_RANGE || cellType === CellType.POWERUP_MAX_BOMBS) {
@@ -1359,7 +1563,7 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
           ))}
 
           {bombs.map(bomb => (
-            <BombComponent key={bomb.id} position={get3DPosition(bomb.col, bomb.row)} />
+            <BombComponent key={bomb.id} position={get3DPosition(bomb.col ?? 0, bomb.row ?? 0)} />
           ))}
 
           {explosions.map(exp => (
@@ -1381,8 +1585,8 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
 
           {/* @ts-ignore - gridHelper é um componente válido do Three.js/React-Three-Fiber */}
           <gridHelper
-            args={[Math.max(GRID_COLUMNS, GRID_ROWS) * CELL_SIZE, Math.max(GRID_COLUMNS, GRID_ROWS), '#555', '#444']}
-            position={[gridCenterX - CELL_SIZE / 2, 0, gridCenterZ - CELL_SIZE / 2]}
+            args={[GRID_COLUMNS * CELL_SIZE, GRID_COLUMNS, '#555', '#444']}
+            position={[boardCenterX - CELL_SIZE / 2, 0, boardCenterZ - CELL_SIZE / 2]}
           />
         </>
       )}
@@ -1411,7 +1615,7 @@ const createInitialEnemiesForMap = (mapType: MapType): EnemyData[] => {
 
   // Para cada tipo de inimigo na configuração, criar o número especificado
   mapEnemies.enemies.forEach(enemyGroup => {
-    const { type, count, difficulty } = enemyGroup;
+    const { type, count } = enemyGroup;
 
     // Usar a dificuldade para ajustar o comportamento (não implementado ainda)
 

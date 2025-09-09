@@ -38,8 +38,8 @@ export function findPath(grid: Grid,
   }
 
   // Verificar se a posição final não é um obstáculo intransponível
-  if (grid[end.r][end.c] === CellType.SOLID_BLOCK) {
-    // Se o destino for um bloco sólido, não há caminho possível
+  if (grid[end.r][end.c] === CellType.Wall || grid[end.r][end.c] === CellType.Water) {
+    // Se o destino for um bloco sólido ou água, não há caminho possível
     return null;
   }
 
@@ -123,25 +123,22 @@ export function findPath(grid: Grid,
           continue;
         } const cellType = grid[y][x]; // Acessar grid com [row][col]
 
-        // Blocos sólidos são sempre intransponíveis
-        if (cellType === CellType.SOLID_BLOCK) {
+        // Água e blocos sólidos são sempre intransponíveis
+        if (cellType === CellType.Water || cellType === CellType.Wall) {
           continue;
         }
-
-        // Blocos destrutíveis são intransponíveis por padrão, 
-        // mas podem ser permitidos com o parâmetro allowDestructible
-        if (cellType === CellType.DESTRUCTIBLE_BLOCK) {
+        // Blocos destrutíveis são intransponíveis por padrão (Breakable),
+        // mas podem ser permitidos com allowDestructible
+        if (cellType === CellType.Breakable) {
           if (!allowDestructible) {
             continue;
           } else {
-            // Se permitirmos passar por blocos destrutíveis, adicionamos uma penalidade
-            // ao custo para que caminhos através de blocos vazios sejam preferidos
             neighborCoord.penalty = 5;
           }
         }
       } else {
-        // Se for o destino, só verificamos se é um bloco sólido
-        if (grid[y][x] === CellType.SOLID_BLOCK) {
+        // Se for o destino, só verificamos se é um bloco sólido ou água
+        if (grid[y][x] === CellType.Wall || grid[y][x] === CellType.Water) {
           continue;
         }
         // Permitimos que o destino seja um bloco destrutível ou uma bomba
