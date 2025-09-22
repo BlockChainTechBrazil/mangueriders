@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -25,9 +25,6 @@ export default function Enemy({
   // Obter a configuração com base no tipo de inimigo
   const enemyConfig = enemyConfigs[enemyType];
 
-  // Usar a cor da configuração, se não for especificada
-  const finalColor = color || enemyConfig.color;
-
   // Referência para o grupo principal do inimigo
   const groupRef = useRef<THREE.Group | null>(null);
 
@@ -49,7 +46,9 @@ export default function Enemy({
   useEffect(() => {
     if (scene) {
       // Configurações do modelo
-      scene.scale.set(0.5, 0.5, 0.5); // Ajusta o tamanho do bot
+      // Aumenta o tamanho base do inimigo para melhorar legibilidade na cena
+      // Subimos para 1.0 para ficar mais próximo do tamanho do jogador
+      scene.scale.set(1.0, 1.0, 1.0);
 
       // Percorre os materiais para ajustar propriedades
       scene.traverse((object) => {
@@ -59,44 +58,9 @@ export default function Enemy({
 
           // Aplicamos a cor específica do tipo de inimigo
           if (object.material) {
-            if (Array.isArray(object.material)) {
-              object.material.forEach(mat => {
-                mat.color = new THREE.Color(finalColor);
 
-                // Adicionar efeitos visuais baseados no tipo de inimigo
-                if (enemyType === EnemyType.GHOST) {
-                  mat.transparent = true;
-                  mat.opacity = 0.7;
-                }
-
-                if (enemyType === EnemyType.FAST) {
-                  mat.emissive = new THREE.Color(0x003366);
-                  mat.emissiveIntensity = 0.3;
-                }
-
-                if (enemyType === EnemyType.AGGRESSIVE) {
-                  mat.emissive = new THREE.Color(0x330000);
-                  mat.emissiveIntensity = 0.5;
-                }
-              });
-            } else {
-              object.material.color = new THREE.Color(finalColor);
-
-              // Adicionar efeitos visuais baseados no tipo de inimigo
-              if (enemyType === EnemyType.GHOST) {
-                object.material.transparent = true;
-                object.material.opacity = 0.7;
-              }
-
-              if (enemyType === EnemyType.FAST) {
-                object.material.emissive = new THREE.Color(0x003366);
-                object.material.emissiveIntensity = 0.3;
-              }
-
-              if (enemyType === EnemyType.AGGRESSIVE) {
-                object.material.emissive = new THREE.Color(0x330000);
-                object.material.emissiveIntensity = 0.5;
-              }
+            if (enemyType === EnemyType.FAST) {
+              object.material.emissiveIntensity = 0.3;
             }
           }
         }
@@ -141,7 +105,7 @@ export default function Enemy({
   }, [scene, color, direction, isMoving, actions, names]);
 
   // Animação de movimento do Bot (efeito de bobbing)
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (groupRef.current && isMoving) {
       // Efeito de bobbing (subir e descer suavemente)
       moveState.current.bobHeight += delta * 2.5 * moveState.current.speed;
@@ -161,29 +125,10 @@ export default function Enemy({
           // Inimigos rápidos se inclinam ligeiramente para frente ao se mover
           groupRef.current.rotation.x = Math.sin(moveState.current.bobHeight * 2) * 0.1;
         }
-
-        // Para inimigos AGGRESSIVE, adicionar um efeito de balanço lateral mais pronunciado
-        if (enemyType === EnemyType.AGGRESSIVE) {
-          // Inimigos agressivos têm um balanço lateral mais dramático
-          groupRef.current.rotation.z = Math.sin(moveState.current.bobHeight * 1.5) * 0.08;
-        }
       }
     } else if (groupRef.current && !isMoving) {
       // Comportamento parado específico por tipo
 
-      // Inimigos GHOST pulsam mesmo quando parados
-      if (enemyType === EnemyType.GHOST) {
-        moveState.current.bobHeight += delta;
-        const pulseScale = 1 + Math.sin(moveState.current.bobHeight) * 0.05;
-        groupRef.current.scale.set(0.5 * pulseScale, 0.5 * pulseScale, 0.5 * pulseScale);
-      }
-
-      // BOMBER faz pequenas rotações olhando ao redor quando parado
-      if (enemyType === EnemyType.BOMBER) {
-        moveState.current.bobHeight += delta;
-        const lookAroundAngle = Math.sin(moveState.current.bobHeight * 0.5) * 0.3;
-        groupRef.current.rotation.y += (lookAroundAngle - groupRef.current.rotation.y) * delta;
-      }
     }
   });
   return (

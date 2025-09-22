@@ -5,25 +5,34 @@ import { POWER_UPS } from '../../utils/constants';
 const GameHUD = ({ player, onPause }) => {
   // Estado para controlar a animação de pontuação
   const [showScoreAnimation, setShowScoreAnimation] = useState(false);
-  const [prevScore, setPrevScore] = useState(player.score);
-  
+  // Inicializa prevScore com 0 e sincroniza sempre que o player muda (evita stale init)
+  const [prevScore, setPrevScore] = useState(0);
+  const [scoreDiff, setScoreDiff] = useState(0);
+
   // Verificar se o score mudou para mostrar a animação
+  // Detecta aumentos no score e mostra animação com a diferença.
+  // Também inicializa prevScore na primeira vez que o player.score é definido.
   useEffect(() => {
-    if (player.score > prevScore) {
-      // Mostrar animação
+    const current = player?.score ?? 0;
+
+    // Inicialização: se prevScore for 0 e o jogador tiver um score inicial diferente, sincroniza
+    if (prevScore === 0 && current !== 0) {
+      setPrevScore(current);
+      return;
+    }
+
+    if (current > prevScore) {
+      const diff = current - prevScore;
+      setScoreDiff(diff);
       setShowScoreAnimation(true);
-      
-      // Esconder após 2 segundos
-      const timer = setTimeout(() => {
-        setShowScoreAnimation(false);
-      }, 2000);
-      
-      // Atualizar o score anterior
-      setPrevScore(player.score);
-      
+
+      const timer = setTimeout(() => setShowScoreAnimation(false), 2000);
+
+      // Atualiza prevScore após mostrar a animação
+      setPrevScore(current);
       return () => clearTimeout(timer);
     }
-  }, [player.score, prevScore]);
+  }, [player?.score, prevScore]);
   return (
     <div className="fixed inset-0 pointer-events-none">
       {/* Barra superior com informações do jogador - Nova UI temática */}
@@ -38,7 +47,7 @@ const GameHUD = ({ player, onPause }) => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-white font-bold text-lg tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-yellow-100 to-yellow-300">
+                <span className="font-bold text-lg tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-yellow-100 to-yellow-300">
                   {player.character}
                 </span>
                 <span className="text-yellow-400 font-bold text-sm bg-black/40 px-2 py-0.5 rounded-md border border-yellow-500/30 relative">
@@ -47,7 +56,8 @@ const GameHUD = ({ player, onPause }) => {
                   {/* Animação quando o score aumenta */}
                   {showScoreAnimation && (
                     <span className="absolute -top-5 -right-2 text-green-400 font-bold animate-bounce px-2 py-0.5 bg-black/60 rounded-md">
-                      +100!
+                      {/* Mostra a diferença calculada (ex: +10) */}
+                      {`+${scoreDiff}`}
                     </span>
                   )}
                 </span>
@@ -57,10 +67,10 @@ const GameHUD = ({ player, onPause }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Separador visual */}
           <div className="h-10 w-px bg-gradient-to-b from-transparent via-yellow-500/30 to-transparent mx-1"></div>
-          
+
           {/* Vidas - Design aprimorado */}
           <div className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-lg border border-red-500/30">
             <div className="text-red-500 text-xs font-mono mr-1">VIDA:</div>
@@ -75,7 +85,7 @@ const GameHUD = ({ player, onPause }) => {
               <div key={i} className="text-gray-600 text-xl opacity-40">❤️</div>
             ))}
           </div>
-          
+
           {/* Power-ups - Alcance de bombas com design futurista */}
           <div className="flex items-center gap-2 ml-4 bg-gradient-to-r from-orange-900/40 to-orange-700/20 px-3 py-1 rounded-lg border border-orange-500/30">
             <div className="text-orange-400 text-lg relative">
@@ -87,7 +97,7 @@ const GameHUD = ({ player, onPause }) => {
               <div className="text-white font-bold">{player.bombRange || 2}</div>
             </div>
           </div>
-          
+
           {/* Power-ups - Máximo de bombas com design futurista */}
           <div className="flex items-center gap-2 ml-2 bg-gradient-to-r from-blue-900/40 to-blue-700/20 px-3 py-1 rounded-lg border border-blue-500/30">
             <div className="text-blue-400 text-lg relative">
@@ -99,7 +109,7 @@ const GameHUD = ({ player, onPause }) => {
               <div className="text-white font-bold">{player.bombs || 1}</div>
             </div>
           </div>
-          
+
           {/* Status de invencibilidade com design futurista */}
           {player.isInvincible && (
             <div className="ml-2 bg-gradient-to-r from-yellow-900/50 to-yellow-700/30 px-3 py-1 rounded-lg border border-yellow-400/50 flex items-center">
@@ -109,7 +119,7 @@ const GameHUD = ({ player, onPause }) => {
               </div>
             </div>
           )}
-          
+
           {/* Power-ups ativos - Adicionado na barra superior */}
           <div className="flex items-center gap-2 ml-4">
             <div className="text-white text-sm">Power-ups:</div>
@@ -117,8 +127,8 @@ const GameHUD = ({ player, onPause }) => {
               {player.powerUps.map((powerUp, i) => {
                 const powerUpInfo = POWER_UPS[powerUp] || {};
                 return (
-                  <div 
-                    key={i} 
+                  <div
+                    key={i}
                     className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-lg"
                     title={powerUpInfo.name}
                   >
@@ -132,20 +142,20 @@ const GameHUD = ({ player, onPause }) => {
             </div>
           </div>
         </div>
-        
+
         {/* Botão de pausa (com pointer-events-auto para permitir cliques) */}
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="text-white pointer-events-auto"
           onClick={onPause}
         >
           ⏸️ Pausar
         </Button>
       </div>
-      
+
       {/* Barra inferior removida conforme solicitado */}
-      
+
       {/* Controles para dispositivos móveis */}
       <div className="absolute bottom-20 left-4 right-4 flex justify-between pointer-events-auto md:hidden">
         {/* Direcionais */}
@@ -155,7 +165,7 @@ const GameHUD = ({ player, onPause }) => {
             ↑
           </button>
           <div className="w-12 h-12"></div>
-          
+
           <button className="w-12 h-12 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center text-white text-2xl">
             ←
           </button>
@@ -163,14 +173,14 @@ const GameHUD = ({ player, onPause }) => {
           <button className="w-12 h-12 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center text-white text-2xl">
             →
           </button>
-          
+
           <div className="w-12 h-12"></div>
           <button className="w-12 h-12 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center text-white text-2xl">
             ↓
           </button>
           <div className="w-12 h-12"></div>
         </div>
-        
+
         {/* Botão de bomba */}
         <button className="w-16 h-16 bg-red-600 bg-opacity-70 rounded-full flex items-center justify-center text-white text-2xl">
           💣

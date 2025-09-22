@@ -46,15 +46,17 @@ const ENEMY_MOVE_INTERVAL = 1500; // Inimigos tentam se mover a cada 1.5 segundo
 // Configuração da câmera (edite aqui para ajustar rapidamente)
 const CAMERA_CONFIG = {
   // Altura da câmera (Y) — menor = mais próxima
-  altitude: 8,
+  // Aumentei altitude para afastar a câmera verticalmente
+  altitude: 10,
   // Deslocamento lateral inicial em X (positivo para direita, negativo para esquerda)
   // Ajustado para -2 para mover a câmera mais para a direita (mais centralizada)
-  initialLateralOffset: -2,
+  initialLateralOffset: 0,
   // Multiplicador aplicado a Math.max(GRID_ROWS, GRID_COLUMNS) para calcular
   // o offset inicial de profundidade (Z). Valores menores deixam a câmera mais próxima.
-  offsetMultiplier: 0.35,
+  // Aumentei o multiplicador para afastar a câmera do tabuleiro
+  offsetMultiplier: 0.24,
   // Campo de visão
-  fov: 80,
+  fov: 60,
   // Distâncias de zoom permitidas
   minDistance: 1,
   maxDistance: 25,
@@ -62,8 +64,8 @@ const CAMERA_CONFIG = {
   followLerpTargetFactor: 6,
   followLerpCameraFactor: 4,
   // Limites de ângulo polar para evitar inversão
-  minPolarAngle: 0.2,
-  maxPolarAngle: Math.PI / 2.2,
+  minPolarAngle: 0.6,
+  maxPolarAngle: Math.PI / 1.8,
   // Velocidade de rotação/pan do OrbitControls
   rotateSpeed: 1.2,
   panSpeed: 1.1
@@ -136,10 +138,20 @@ const createInitialGrid = (enemiesInitial: EnemyData[]): CellType[][] => { // Re
     }
   }
 
-  // Garantir que a posição inicial e adjacentes estejam vazias
-  grid[PLAYER_START_ROW][PLAYER_START_COL] = CellType.Empty;
-  if (PLAYER_START_COL + 1 < GRID_COLUMNS) grid[PLAYER_START_ROW][PLAYER_START_COL + 1] = CellType.Empty;
-  if (PLAYER_START_ROW + 1 < GRID_ROWS) grid[PLAYER_START_ROW + 1][PLAYER_START_COL] = CellType.Empty;
+  // OBS: removida a limpeza em raio seguro grande para permitir mais objetos
+  // ao redor do jogador (anteriormente havia SAFE_RADIUS=3 que deixava muita área vazia).
+  // Mantemos apenas as células imediatamente em volta do jogador livres para não
+  // prender o jogador na inicialização.
+  const immediateSafe = [
+    [PLAYER_START_ROW, PLAYER_START_COL],
+    [PLAYER_START_ROW, PLAYER_START_COL + 1],
+    [PLAYER_START_ROW + 1, PLAYER_START_COL]
+  ];
+  immediateSafe.forEach(([sr, sc]) => {
+    if (sr >= 0 && sr < GRID_ROWS && sc >= 0 && sc < GRID_COLUMNS) {
+      grid[sr][sc] = CellType.Empty;
+    }
+  });
 
   return grid;
 };
@@ -1515,13 +1527,12 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
         <>
           {/* Plano de Chão com cor baseada no mapa selecionado */}
           {/* @ts-ignore */}
-          <mesh receiveShadow position={[boardCenterX - CELL_SIZE / 2, -0.05, boardCenterZ - CELL_SIZE / 2]} rotation={[-Math.PI / 2, 0, 0]}>
-            {/* @ts-ignore */}
-            {/* Ground plane tightly around the board with a small margin */}
-            <planeGeometry args={[(GRID_COLUMNS * CELL_SIZE) + 4, (GRID_ROWS * CELL_SIZE) + 4]} />
-            {/* @ts-ignore */}
-            <meshStandardMaterial color={memoFinalMapData.groundColor} />
-            {/* @ts-ignore - mesh é um componente válido do Three.js/React-Three-Fiber */}
+          <mesh position={[boardCenterX - CELL_SIZE / 2, -0.05, boardCenterZ - CELL_SIZE / 2]} rotation={[-Math.PI / 2, 0, 0]}
+          // evitar receber sombras para reduzir artefatos visuais
+          >
+            {/* Ground plane com apenas 1 segmento para evitar linhas de subdivisão */}
+            <planeGeometry args={[(GRID_COLUMNS * CELL_SIZE) + 4, (GRID_ROWS * CELL_SIZE) + 4, 1, 1]} />
+            <meshStandardMaterial color={memoFinalMapData.groundColor} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
           </mesh>
 
           {/* Renderizamos apenas os blocos e power-ups que existem (sem nulos ou whitespace) */}
@@ -1583,11 +1594,15 @@ export default function Game({ mapType = MapType.FOREST }: GameProps) {
           />
           )}
 
-          {/* @ts-ignore - gridHelper é um componente válido do Three.js/React-Three-Fiber */}
-          <gridHelper
-            args={[GRID_COLUMNS * CELL_SIZE, GRID_COLUMNS, '#555', '#444']}
-            position={[boardCenterX - CELL_SIZE / 2, 0, boardCenterZ - CELL_SIZE / 2]}
-          />
+          {/* GridHelper removido: linhas do chão foram eliminadas para visual de mangue.
+              Se precisar debugar grade, reative o componente abaixo. */}
+          {false && (
+            // <gridHelper
+            //   args={[GRID_COLUMNS * CELL_SIZE, GRID_COLUMNS, '#555', '#444']}
+            //   position={[boardCenterX - CELL_SIZE / 2, 0, boardCenterZ - CELL_SIZE / 2]}
+            // />
+            null
+          )}
         </>
       )}
     </>

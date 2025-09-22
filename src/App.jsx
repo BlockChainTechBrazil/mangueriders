@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ToastProvider } from "./components/ui/ToastProvider";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import BombLoadingScreen from "./components/BombLoadingScreen";
@@ -22,15 +22,15 @@ import { useWallet } from "./context/WalletContext";
 import Footer from "./components/Footer";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  const handleLoadingComplete = () => {
-    setIsLoading(false);
-  };
+  // const handleLoadingComplete = () => {
+  //   setIsLoading(false);
+  // };
 
-  if (isLoading) {
-    return <BombLoadingScreen onLoadingComplete={handleLoadingComplete} />;
-  }
+  // if (isLoading) {
+  //   return <BombLoadingScreen onLoadingComplete={handleLoadingComplete} />;
+  // }
 
   return (
     <ToastProvider>

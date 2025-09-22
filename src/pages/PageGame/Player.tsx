@@ -30,7 +30,7 @@ interface PlayerProps {
           '/models/characters/Weet.glb',
           '/models/characters/Raio.glb'
         ];
-        
+
         for (const modelPath of models) {
           try {
             useGLTF.preload(modelPath);
@@ -38,10 +38,10 @@ interface PlayerProps {
             console.error(`Erro ao pré-carregar modelo ${modelPath}:`, error);
           }
         }
-        
+
         setModelsPreloaded(true);
       };
-      
+
       preloadModels();
     }
   }, [modelsPreloaded]);
@@ -90,13 +90,9 @@ interface PlayerProps {
     if (!scene) return; // Garante que a cena está disponível
 
     // Aplica escala adequada ao modelo baseada no personagem
-    const characterScale = playerData.character === 'WEET' ? 0.65 : 0.7;
-    scene.scale.set(characterScale, characterScale, characterScale);
-
-    // Adiciona um ajuste vertical APENAS para o modelo de movimento para compensar a altura
-    if (activeModel === 'move') {
-      scene.position.y = -0.5; // <-- Altere este valor se o personagem ainda estiver flutuando ou afundando.
-    }
+    // Aumentamos a escala para que o jogador fique visivelmente maior que objetos pequenos (lixo)
+    const defaultScale = 1.0;
+    scene.scale.set(defaultScale, defaultScale, defaultScale);
 
     // Verifica se temos animações disponíveis
     if (names && names.length > 0) {
