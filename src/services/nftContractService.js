@@ -966,9 +966,9 @@ class NFTContractService {
    */
   async initialize(provider, signer) {
     try {
-      console.log('🚀 Inicializando NFT Contract Service...');
-      console.log('🔧 Provider:', !!provider);
-      console.log('🔧 Signer:', !!signer);
+      if (import.meta.env.DEV) console.log('🚀 Inicializando NFT Contract Service...');
+      if (import.meta.env.DEV) console.log('🔧 Provider:', !!provider);
+      if (import.meta.env.DEV) console.log('🔧 Signer:', !!signer);
 
       if (!provider || !signer) {
         console.error('❌ Provider ou Signer não fornecidos');
@@ -978,9 +978,9 @@ class NFTContractService {
       this.provider = provider;
       this.signer = signer;
 
-      console.log('🔧 Debug - CONTRACT_ADDRESS:', CONTRACT_ADDRESS);
-      console.log('🔧 Debug - env var VITE_CONTRACT_ADDRESS:', import.meta.env.VITE_CONTRACT_ADDRESS);
-      console.log('🔧 Debug - todas as env vars:', Object.keys(import.meta.env).filter(key => key.includes('CONTRACT')));
+      if (import.meta.env.DEV) console.log('🔧 Debug - CONTRACT_ADDRESS:', CONTRACT_ADDRESS);
+      if (import.meta.env.DEV) console.log('🔧 Debug - env var VITE_CONTRACT_ADDRESS:', import.meta.env.VITE_CONTRACT_ADDRESS);
+      if (import.meta.env.DEV) console.log('🔧 Debug - todas as env vars:', Object.keys(import.meta.env).filter(key => key.includes('CONTRACT')));
 
       if (!CONTRACT_ADDRESS) {
         console.error('❌ CONTRACT_ADDRESS está vazio ou undefined');
@@ -992,12 +992,12 @@ class NFTContractService {
         return false;
       }
 
-      console.log('🔄 Criando instância do contrato...');
+      if (import.meta.env.DEV) console.log('🔄 Criando instância do contrato...');
       // Criar instância do contrato
       this.contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-      console.log('✅ NFT Contract initialized:', CONTRACT_ADDRESS);
-      console.log('✅ Contract instance created:', !!this.contract);
+      if (import.meta.env.DEV) console.log('✅ NFT Contract initialized:', CONTRACT_ADDRESS);
+      if (import.meta.env.DEV) console.log('✅ Contract instance created:', !!this.contract);
 
       // Verificar se a instância foi criada corretamente
       if (!this.contract) {
@@ -1007,16 +1007,16 @@ class NFTContractService {
 
       // Testar se o contrato responde (sem falhar a inicialização)
       try {
-        console.log('🔄 Testando conectividade do contrato...');
+        if (import.meta.env.DEV) console.log('🔄 Testando conectividade do contrato...');
         const name = await this.contract.name();
-        console.log('✅ Contract name:', name);
-        console.log('✅ Contrato responde corretamente');
+        if (import.meta.env.DEV) console.log('✅ Contract name:', name);
+        if (import.meta.env.DEV) console.log('✅ Contrato responde corretamente');
       } catch (testError) {
         console.warn('⚠️ Erro ao testar contrato (pode ser normal em development):', testError.message);
         // Não falhar a inicialização por causa deste teste
       }
 
-      console.log('✅ Inicialização do contrato concluída com sucesso');
+      if (import.meta.env.DEV) console.log('✅ Inicialização do contrato concluída com sucesso');
       return true;
     } catch (error) {
       console.error('❌ Error initializing NFT contract:', error);
@@ -1038,7 +1038,7 @@ class NFTContractService {
    */
   isInitialized() {
     const initialized = this.contract !== null;
-    console.log('🔍 isInitialized check:', {
+    if (import.meta.env.DEV) console.log('🔍 isInitialized check:', {
       contractExists: !!this.contract,
       initialized,
       contractAddress: CONTRACT_ADDRESS
@@ -1081,85 +1081,85 @@ class NFTContractService {
    * Obtém informações da wallet
    */
   async getWalletInfo(walletAddress) {
-    console.log('🔍 [NFTContract] getWalletInfo iniciado para:', walletAddress);
+    if (import.meta.env.DEV) console.log('🔍 [NFTContract] getWalletInfo iniciado para:', walletAddress);
 
     if (!this.isInitialized()) {
       console.log('❌ [NFTContract] Contrato não inicializado');
       throw new Error('Contract not initialized');
     }
 
-    console.log('✅ [NFTContract] Contrato inicializado, fazendo chamadas...');
-    console.log('📋 [NFTContract] Contract address:', this.contractAddress);
-    console.log('📋 [NFTContract] Contract instance:', !!this.contract);
+    if (import.meta.env.DEV) console.log('✅ [NFTContract] Contrato inicializado, fazendo chamadas...');
+    if (import.meta.env.DEV) console.log('📋 [NFTContract] Contract address:', this.contractAddress);
+    if (import.meta.env.DEV) console.log('📋 [NFTContract] Contract instance:', !!this.contract);
 
     try {
       // Verificar se as funções existem no contrato
-      console.log('🔧 [NFTContract] Verificando funções disponíveis...');
-      console.log('🔧 [NFTContract] getTokensOfOwner existe:', typeof this.contract.getTokensOfOwner === 'function');
-      console.log('🔧 [NFTContract] getWalletMintCount existe:', typeof this.contract.getWalletMintCount === 'function');
-      console.log('🔧 [NFTContract] getRemainingMints existe:', typeof this.contract.getRemainingMints === 'function');
-      console.log('🔧 [NFTContract] balanceOf existe:', typeof this.contract.balanceOf === 'function');
-      console.log('🔧 [NFTContract] tokenOfOwnerByIndex existe:', typeof this.contract.tokenOfOwnerByIndex === 'function');
-      console.log('🔧 [NFTContract] ownerOf existe:', typeof this.contract.ownerOf === 'function');
-      console.log('🔧 [NFTContract] totalSupply existe:', typeof this.contract.totalSupply === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] Verificando funções disponíveis...');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] getTokensOfOwner existe:', typeof this.contract.getTokensOfOwner === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] getWalletMintCount existe:', typeof this.contract.getWalletMintCount === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] getRemainingMints existe:', typeof this.contract.getRemainingMints === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] balanceOf existe:', typeof this.contract.balanceOf === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] tokenOfOwnerByIndex existe:', typeof this.contract.tokenOfOwnerByIndex === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] ownerOf existe:', typeof this.contract.ownerOf === 'function');
+      if (import.meta.env.DEV) console.log('🔧 [NFTContract] totalSupply existe:', typeof this.contract.totalSupply === 'function');
 
-      console.log('📞 [NFTContract] Chamando getTokensOfOwner...');
+      if (import.meta.env.DEV) console.log('📞 [NFTContract] Chamando getTokensOfOwner...');
       const ownedTokens = await this.contract.getTokensOfOwner(walletAddress);
-      console.log('📋 [NFTContract] Tokens brutos retornados:', ownedTokens);
-      console.log('📋 [NFTContract] Tipo de tokens retornados:', typeof ownedTokens);
-      console.log('� [NFTContract] É array:', Array.isArray(ownedTokens));
-      console.log('📋 [NFTContract] Length:', ownedTokens?.length);
+      if (import.meta.env.DEV) console.log('📋 [NFTContract] Tokens brutos retornados:', ownedTokens);
+      if (import.meta.env.DEV) console.log('📋 [NFTContract] Tipo de tokens retornados:', typeof ownedTokens);
+      if (import.meta.env.DEV) console.log('� [NFTContract] É array:', Array.isArray(ownedTokens));
+      if (import.meta.env.DEV) console.log('📋 [NFTContract] Length:', ownedTokens?.length);
 
-      console.log('�📞 [NFTContract] Chamando getWalletMintCount...');
+      if (import.meta.env.DEV) console.log('�📞 [NFTContract] Chamando getWalletMintCount...');
       const mintCount = await this.contract.getWalletMintCount(walletAddress);
-      console.log('🔢 [NFTContract] Mint count:', mintCount);
+      if (import.meta.env.DEV) console.log('🔢 [NFTContract] Mint count:', mintCount);
 
-      console.log('📞 [NFTContract] Chamando getRemainingMints...');
+      if (import.meta.env.DEV) console.log('📞 [NFTContract] Chamando getRemainingMints...');
       const remainingMints = await this.contract.getRemainingMints(walletAddress);
-      console.log('⏳ [NFTContract] Remaining mints:', remainingMints);
+      if (import.meta.env.DEV) console.log('⏳ [NFTContract] Remaining mints:', remainingMints);
 
       // Método alternativo usando balanceOf e tokenOfOwnerByIndex se getTokensOfOwner retornar vazio
       if (!ownedTokens || ownedTokens.length === 0) {
-        console.log('🔄 [NFTContract] getTokensOfOwner retornou vazio, tentando método alternativo...');
+        if (import.meta.env.DEV) console.log('🔄 [NFTContract] getTokensOfOwner retornou vazio, tentando método alternativo...');
         try {
           const balance = await this.contract.balanceOf(walletAddress);
           const balanceNum = Number(balance);
-          console.log('💰 [NFTContract] Balance do usuário:', balanceNum);
+          if (import.meta.env.DEV) console.log('💰 [NFTContract] Balance do usuário:', balanceNum);
 
           if (balanceNum > 0) {
-            console.log('🔍 [NFTContract] Usuário tem NFTs, buscando tokens...');
+            if (import.meta.env.DEV) console.log('🔍 [NFTContract] Usuário tem NFTs, buscando tokens...');
             const alternativeTokens = [];
 
             // Se tokenOfOwnerByIndex existe, usar ele
             if (typeof this.contract.tokenOfOwnerByIndex === 'function') {
-              console.log('📋 [NFTContract] Usando tokenOfOwnerByIndex...');
+              if (import.meta.env.DEV) console.log('📋 [NFTContract] Usando tokenOfOwnerByIndex...');
               for (let i = 0; i < balanceNum; i++) {
                 try {
                   const tokenId = await this.contract.tokenOfOwnerByIndex(walletAddress, i);
                   alternativeTokens.push(tokenId);
-                  console.log(`🎯 [NFTContract] Token encontrado: ${tokenId}`);
+                  if (import.meta.env.DEV) console.log(`🎯 [NFTContract] Token encontrado: ${tokenId}`);
                 } catch (indexError) {
                   console.warn(`⚠️ [NFTContract] Erro no índice ${i}:`, indexError);
                 }
               }
             } else {
-              console.log('📋 [NFTContract] tokenOfOwnerByIndex não disponível, tentando varredura...');
+              if (import.meta.env.DEV) console.log('📋 [NFTContract] tokenOfOwnerByIndex não disponível, tentando varredura...');
               // Método de varredura: verificar tokens recentemente mintados
               try {
                 const totalSupply = await this.contract.totalSupply();
                 const totalSupplyNum = Number(totalSupply);
-                console.log('📊 [NFTContract] Total supply:', totalSupplyNum);
+                if (import.meta.env.DEV) console.log('📊 [NFTContract] Total supply:', totalSupplyNum);
 
                 // Verificar os últimos 100 tokens (ou totalSupply se menor)
                 const startToken = Math.max(1, totalSupplyNum - 100);
-                console.log(`🔍 [NFTContract] Verificando tokens de ${startToken} a ${totalSupplyNum}...`);
+                if (import.meta.env.DEV) console.log(`🔍 [NFTContract] Verificando tokens de ${startToken} a ${totalSupplyNum}...`);
 
                 for (let tokenId = startToken; tokenId <= totalSupplyNum; tokenId++) {
                   try {
                     const owner = await this.contract.ownerOf(tokenId);
                     if (owner.toLowerCase() === walletAddress.toLowerCase()) {
                       alternativeTokens.push(BigInt(tokenId));
-                      console.log(`🎯 [NFTContract] Token ${tokenId} pertence ao usuário`);
+                      if (import.meta.env.DEV) console.log(`🎯 [NFTContract] Token ${tokenId} pertence ao usuário`);
                       if (alternativeTokens.length >= balanceNum) break; // Parar se já encontramos todos
                     }
                   } catch {
@@ -1172,7 +1172,7 @@ class NFTContractService {
             }
 
             if (alternativeTokens.length > 0) {
-              console.log('✅ [NFTContract] Substituindo por tokens do método alternativo:', alternativeTokens);
+              if (import.meta.env.DEV) console.log('✅ [NFTContract] Substituindo por tokens do método alternativo:', alternativeTokens);
               ownedTokens.splice(0, ownedTokens.length, ...alternativeTokens);
             }
           }
@@ -1182,7 +1182,7 @@ class NFTContractService {
       }
 
       const processedTokens = ownedTokens.map(token => Number(token));
-      console.log('🔄 [NFTContract] Tokens processados:', processedTokens);
+      if (import.meta.env.DEV) console.log('🔄 [NFTContract] Tokens processados:', processedTokens);
 
       const result = {
         ownedTokens: processedTokens,
@@ -1190,7 +1190,7 @@ class NFTContractService {
         remainingMints: Number(remainingMints)
       };
 
-      console.log('✅ [NFTContract] Resultado final getWalletInfo:', result);
+      if (import.meta.env.DEV) console.log('✅ [NFTContract] Resultado final getWalletInfo:', result);
       return result;
     } catch (error) {
       console.error('❌ [NFTContract] Error getting wallet info:', error);
