@@ -209,23 +209,17 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   };
   // Conectar à wallet
   const connectWallet = async () => {
-    // console.log removido
     try {
       const { ethereum } = window as any;
-      // console.log removido
 
       if (!ethereum) {
-        // console.error removido
         throw new Error('MetaMask não encontrada. Por favor, instale a MetaMask.');
       }
 
-      // console.log removido
       // Solicitar acesso à conta
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      // console.log removido
 
       if (accounts.length === 0) {
-        // console.error removido
         throw new Error('Nenhuma conta autorizada.');
       }
 
@@ -250,38 +244,15 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       setWalletAddress(accounts[0]);
       setIsConnected(true);
 
-      // Inicializar serviço de contratos NFT
-      // console.log removido
-      // console.log removido
-      const initSuccess = await nftContractService.initialize(provider, signer);
-      // console.log removido
-      // console.log removido
-
-      if (!initSuccess) {
-        // console.error removido
-        // Não falhar a conexão da wallet por causa do contrato
-      } else {
-        if (import.meta.env.DEV) console.log('✅ Contrato NFT inicializado com sucesso');
-      }
-
-      // Obter informações do contrato
+      // Inicializar contrato NFT apenas (sem buscar NFTs automaticamente)
       try {
-        const contractInfo = await nftContractService.getContractInfo();
-        setContractInfo(contractInfo);
-        if (import.meta.env.DEV) console.log('✅ Informações do contrato carregadas:', contractInfo);
-      } catch (error) {
-        console.warn('⚠️ Contrato NFT não disponível:', error);
+        await nftContractService.initialize(provider, signer);
+      } catch (contractError) {
+        console.warn('⚠️ Erro ao inicializar contrato:', contractError);
       }
 
       // Obter saldo da carteira
       await getWalletBalance(accounts[0], provider);
-
-      // Buscar NFTs da carteira
-      if (import.meta.env.DEV) console.log('🔄 Iniciando busca de NFTs...');
-      await fetchOwnedNFTs(accounts[0], provider);
-
-      // Armazenar o estado de conexão no localStorage
-      localStorage.setItem('isWalletConnected', 'true');
     } catch (error: any) {
       console.error('Erro ao conectar carteira:', error);
       throw error;
@@ -302,7 +273,6 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   useEffect(() => {
     // Pular verificação se a rota atual não precisa de verificações de wallet
     if (!shouldCheckNetwork) {
-      if (import.meta.env.DEV) console.log('[Wallet] Pulando inicialização da wallet nesta rota');
       return;
     }
 
@@ -332,19 +302,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
               setWalletAddress(accounts[0]);
               setIsConnected(true);
 
-              // Inicializar contrato NFT aqui também
-              if (import.meta.env.DEV) console.log('🔄 [useEffect] Inicializando contrato NFT...');
+              // Inicializar contrato NFT apenas (sem buscar NFTs automaticamente)
               try {
-                const initSuccess = await nftContractService.initialize(provider, signer);
-                if (import.meta.env.DEV) console.log('🔧 [useEffect] Resultado da inicialização:', initSuccess);
-
-                if (initSuccess) {
-                  // Buscar NFTs após inicializar o contrato
-                  if (import.meta.env.DEV) console.log('🔄 [useEffect] Buscando NFTs...');
-                  await fetchOwnedNFTs(accounts[0], provider);
-                }
+                await nftContractService.initialize(provider, signer);
               } catch (contractError) {
-                console.warn('⚠️ [useEffect] Erro ao inicializar contrato:', contractError);
+                console.warn('⚠️ Erro ao inicializar contrato:', contractError);
               }
 
               // Obter saldo da carteira
@@ -358,94 +320,40 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       };
 
       checkConnection();
-
-      // Adicionar listeners para eventos da MetaMask
-      const handleAccountsChanged = async (accounts: string[]) => {
-        if (accounts.length === 0) {
-          // Usuário desconectou via MetaMask
-          disconnectWallet();
-        } else if (accounts[0] !== walletAddress) {
-          // Usuário trocou de conta
-          setWalletAddress(accounts[0]);
-
-          // Obter saldo da nova carteira
-          if (provider) {
-            await getWalletBalance(accounts[0], provider);
-          }
-        }
-      };
-
-      const handleChainChanged = () => {
-        // Quando a rede muda, a página deve ser recarregada
-        window.location.reload();
-      };
-
-      ethereum.on('accountsChanged', handleAccountsChanged);
-      ethereum.on('chainChanged', handleChainChanged);
-
-      return () => {
-        // Remover listeners quando o componente for desmontado
-        ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        ethereum.removeListener('chainChanged', handleChainChanged);
-      };
     }
-  }, [shouldCheckNetwork, currentPath]);  // Removidas walletAddress e provider para evitar loop infinito
-  const fetchOwnedNFTs = async (address: string, provider: any) => {
-    if (import.meta.env.DEV) console.log('🚀 [Wallet] === INÍCIO fetchOwnedNFTs ===');
-    if (import.meta.env.DEV) console.log('🔍 [Wallet] Address:', address);
-    if (import.meta.env.DEV) console.log('🔍 [Wallet] Provider:', !!provider);
-    if (import.meta.env.DEV) console.log('🔍 [Wallet] shouldCheckNetwork:', shouldCheckNetwork);
+  }, [shouldCheckNetwork]);
 
+  const fetchOwnedNFTs = async (address: string, provider: any) => {
     // Verificar se devemos pular a busca por NFTs baseado na rota
     if (!shouldCheckNetwork) {
-      if (import.meta.env.DEV) console.log('[Wallet] Pulando busca de NFTs nesta rota');
       return;
     }
 
     if (!address || !provider) {
-      if (import.meta.env.DEV) console.log('[Wallet] ❌ Address ou provider não fornecidos:', { address: !!address, provider: !!provider });
       return;
     }
 
-    if (import.meta.env.DEV) console.log('🔄 [Wallet] Iniciando setIsLoading(true)');
     setIsLoading(true);
     try {
-      if (import.meta.env.DEV) console.log('[Wallet] Buscando NFTs para a carteira:', address);
-      if (import.meta.env.DEV) console.log('[Wallet] 🔧 Verificando se contrato está inicializado:', nftContractService.isInitialized());
-
       if (nftContractService.isInitialized()) {
-        if (import.meta.env.DEV) console.log('[Wallet] ✅ Contrato inicializado, buscando NFTs...');
-
         // Buscar NFTs reais do contrato e enriquecer com metadata/tokenURI
-        if (import.meta.env.DEV) console.log('[Wallet] 🚀 Chamando getWalletInfo para:', address);
         const walletInfo = await nftContractService.getWalletInfo(address);
-        if (import.meta.env.DEV) console.log('📋 [Wallet] Wallet info recebido:', walletInfo);
-        if (import.meta.env.DEV) console.log('📋 [Wallet] Tipo de ownedTokens:', typeof walletInfo.ownedTokens);
-        if (import.meta.env.DEV) console.log('📋 [Wallet] Array.isArray(ownedTokens):', Array.isArray(walletInfo.ownedTokens));
-        if (import.meta.env.DEV) console.log('📋 [Wallet] ownedTokens.length:', walletInfo.ownedTokens?.length);
 
         if (walletInfo.ownedTokens && walletInfo.ownedTokens.length > 0) {
-          if (import.meta.env.DEV) console.log(`🎯 Encontrados ${walletInfo.ownedTokens.length} tokens:`, walletInfo.ownedTokens);
-
           const nftDetails = await Promise.all(
             walletInfo.ownedTokens.map(async (tokenId: number) => {
-              if (import.meta.env.DEV) console.log('🔍 Buscando detalhes do token:', tokenId);
               const details = await nftContractService.getTokenDetails(tokenId);
-              if (import.meta.env.DEV) console.log('📄 Detalhes do token:', details);
 
               let image: string | undefined = undefined;
               let metadata: any = null;
               try {
                 const httpTokenUri = ipfs.convertIPFSToHTTP((details as any).tokenURI || (details as any).uri);
-                if (import.meta.env.DEV) console.log('🌐 Token URI HTTP:', httpTokenUri);
                 metadata = await ipfs.fetchNFTMetadata(httpTokenUri);
-                if (import.meta.env.DEV) console.log('📊 Metadata:', metadata);
                 const img = metadata?.image || metadata?.image_url;
                 // Converter a imagem para gateway público também
                 image = img ? ipfs.convertIPFSToHTTP(img) : undefined;
-                if (import.meta.env.DEV) console.log('🖼️ Imagem convertida:', image);
               } catch (e) {
-                console.warn('[Wallet] Falha ao obter metadata do token', tokenId, e);
+                console.warn('Falha ao obter metadata do token', tokenId, e);
               }
               return {
                 ...(details as any),
@@ -455,15 +363,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
               } as NFTInfo;
             })
           );
-          if (import.meta.env.DEV) console.log('✅ NFTs encontrados:', nftDetails);
           setOwnedNFTs(nftDetails);
         } else {
-          if (import.meta.env.DEV) console.log('📭 Nenhum token encontrado para esta carteira');
           setOwnedNFTs([]);
         }
       } else {
-        if (import.meta.env.DEV) console.log('[Wallet] ❌ Contrato não inicializado, usando fallback');
-
         // Fallback para NFTs simulados se o contrato não estiver disponível
         const mockNFTs: NFTInfo[] = [
           {
@@ -486,7 +390,6 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           }
         ];
 
-        if (import.meta.env.DEV) console.log('[Wallet] 🎭 Usando NFTs mock:', mockNFTs);
         setOwnedNFTs(mockNFTs);
       }
     } catch (error) {
@@ -495,7 +398,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };  // Função para comprar um NFT (transação real na blockchain)
+  };
+
+  // Função para comprar um NFT (transação real na blockchain)
   const buyNFT = async (nftId: string, price: string) => {
     setIsLoading(true);
     try {
@@ -638,14 +543,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   // Função para refresh manual dos NFTs
   const refreshNFTs = async () => {
     if (isConnected && walletAddress && provider) {
-      if (import.meta.env.DEV) console.log('🔄 Refresh manual dos NFTs...');
-
       // Verificar se o contrato está inicializado
       if (!nftContractService.isInitialized()) {
-        if (import.meta.env.DEV) console.log('🔧 Contrato não inicializado, tentando inicializar...');
         const signer = await provider.getSigner();
-        const initSuccess = await nftContractService.initialize(provider, signer);
-        if (import.meta.env.DEV) console.log('🔧 Resultado da inicialização no refresh:', initSuccess);
+        await nftContractService.initialize(provider, signer);
       }
 
       await fetchOwnedNFTs(walletAddress, provider);
@@ -678,3 +579,5 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     </WalletContext.Provider>
   );
 };
+
+export default WalletProvider;

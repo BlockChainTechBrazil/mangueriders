@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { ParallaxProvider } from 'react-scroll-parallax';
-import { animate, stagger } from 'animejs';
+import { motion, animate, stagger } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ParallaxProvider } from 'react-scroll-parallax';
 import HeroWave from '@/components/HeroWave';
 
 const heroTitle = {

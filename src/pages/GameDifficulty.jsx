@@ -10,7 +10,7 @@ export default function GameDifficulty() {
   };
 
   return (
-    <div className="game-container">
+    <div className="game-container h-screen overflow-hidden">
       {difficulty === null ? (
         <DifficultyMenu onSelectDifficulty={handleSelectDifficulty} />
       ) : (

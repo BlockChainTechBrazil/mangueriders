@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 function LandingPage() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [visibleSections, setVisibleSections] = useState(new Set());
   const sectionRefs = useRef({});
@@ -101,29 +100,56 @@ function LandingPage() {
               MANGUE RIDERS
             </h1>
 
-            <div className="bg-green-400/90 backdrop-blur-sm text-black p-6 rounded-lg border-4 border-green-600 shadow-2xl max-w-4xl mx-4 transform hover:scale-105 transition-all duration-300">
-              <p className="text-lg md:text-xl font-bold leading-relaxed">
-                EM RECIFE, O MANGUE ESTÁ SENDO POLUÍDO POR EMPRESÁRIOS GANANCIOSOS. MAS NÃO ESTÁ PERDIDO.
-                OS MANGUE RIDERS SURGEM COMO A ÚLTIMA ESPERANÇA DA NATUREZA. JUNTE-SE A MANGUITO NA LUTA PARA SALVAR O MANGUEZAL!
-                <br /><br />
-                <span className="text-sm">🏖️ De Recife Antigo às praias paradisíacas, a preservação começa agora!</span>
+            <div className="bg-green-400/90 backdrop-blur-sm text-black p-8 rounded-xl border-4 border-green-600 shadow-2xl max-w-5xl mx-4 transform hover:scale-105 transition-all duration-300">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-green-800">
+                🌿 A LENDA DOS MANGUE RIDERS 🌿
+              </h2>
+              <p className="text-lg md:text-xl font-bold leading-relaxed mb-4">
+                Nas águas sagradas do mangue pernambucano, onde o rio encontra o mar, uma antiga lenda ganha vida. 
+                Os MANGUE RIDERS são os guardiões ancestrais do ecossistema, criaturas místicas que protegem a biodiversidade há séculos.
+              </p>
+              <p className="text-base md:text-lg leading-relaxed mb-4">
+                Mas agora, empresários gananciosos ameaçam destruir tudo com poluição e desmatamento. 
+                O mangue clama por heróis! MANGUITO, o último dos grandes Mangue Riders, desperta de seu sono profundo 
+                para liderar a resistência contra a destruição ambiental.
+              </p>
+              <p className="text-base md:text-lg font-semibold text-green-900">
+                🦀 Colete CrabCoins, derrote os poluidores e restaure o equilíbrio natural! 
+                <br />🏖️ De Recife Antigo às praias paradisíacas, a preservação começa AGORA!
               </p>
             </div>
           </div>
 
-          {/* Estatísticas */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center pointer-events-none">
+          {/* Estatísticas Melhoradas */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center pointer-events-none mt-8">
             {[
-              { value: '5', label: 'Max Jogadores', color: 'red', gradient: 'from-red-500/20 to-orange-500/20', border: 'border-red-500/30' },
-              { value: '5', label: 'Personagens', color: 'blue', gradient: 'from-blue-500/20 to-cyan-500/20', border: 'border-blue-500/30' },
-              { value: '4', label: 'Mapas', color: 'green', gradient: 'from-green-500/20 to-emerald-500/20', border: 'border-green-500/30' },
-              { value: '100+', label: 'NFTs', color: 'purple', gradient: 'from-purple-500/20 to-pink-500/20', border: 'border-purple-500/30' }
+              { value: '∞', label: 'Aventuras Épicas', color: 'red', gradient: 'from-red-500/20 to-orange-500/20', border: 'border-red-500/30', icon: '⚔️' },
+              { value: '5', label: 'Heróis Únicos', color: 'blue', gradient: 'from-blue-500/20 to-cyan-500/20', border: 'border-blue-500/30', icon: '🦀' },
+              { value: '4', label: 'Biomas Mágicos', color: 'green', gradient: 'from-green-500/20 to-emerald-500/20', border: 'border-green-500/30', icon: '🌿' },
+              { value: '100+', label: 'NFTs Raros', color: 'purple', gradient: 'from-purple-500/20 to-pink-500/20', border: 'border-purple-500/30', icon: '💎' }
             ].map((stat, index) => (
-              <div key={index} className={`bg-gradient-to-br ${stat.gradient} backdrop-blur-sm p-4 rounded-lg border ${stat.border} transform hover:scale-105 transition-all duration-300`}>
-                <div className={`text-3xl font-bold text-${stat.color}-400`}>{stat.value}</div>
-                <div className={`text-sm text-${stat.color}-300`}>{stat.label}</div>
+              <div key={index} className={`bg-gradient-to-br ${stat.gradient} backdrop-blur-sm p-6 rounded-xl border-2 ${stat.border} transform hover:scale-110 transition-all duration-300 hover:shadow-2xl`}>
+                <div className="text-2xl mb-2">{stat.icon}</div>
+                <div className={`text-4xl font-bold text-${stat.color}-400 mb-1`}>{stat.value}</div>
+                <div className={`text-sm font-semibold text-${stat.color}-300`}>{stat.label}</div>
               </div>
             ))}
+          </div>
+
+          {/* Botões de Ação */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12 pointer-events-auto">
+            <button 
+              onClick={() => navigate('/game')}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-xl text-lg transform hover:scale-105 transition-all duration-300 shadow-2xl border-2 border-green-400"
+            >
+              🎮 JOGAR AGORA
+            </button>
+            <button 
+              onClick={() => navigate('/nft')}
+              className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-xl text-lg transform hover:scale-105 transition-all duration-300 shadow-2xl border-2 border-purple-400"
+            >
+              💎 VER NFTs
+            </button>
           </div>
         </div>
 
@@ -269,7 +295,7 @@ function LandingPage() {
       </section>
 
       {/* Estilos CSS customizados */}
-      <style jsx>{`
+      <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
           50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }

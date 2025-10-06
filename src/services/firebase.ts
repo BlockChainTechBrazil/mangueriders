@@ -22,5 +22,3 @@ export const db = getFirestore(app);
 
 // Inicializar Realtime Database (para multiplayer em tempo real)
 export const realtimeDb = getDatabase(app);
-
-export default app;

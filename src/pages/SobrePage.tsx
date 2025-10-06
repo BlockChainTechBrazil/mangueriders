@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 
 const sectionAnim = {
   hidden: { opacity: 0, y: 20 },
@@ -8,8 +7,6 @@ const sectionAnim = {
 };
 
 const SobrePage: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <main className="pt-24 pb-20 bg-gradient-to-b from-black via-cyan-950/30 to-gray-900 text-cyan-100 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">

@@ -62,7 +62,7 @@ const Header = () => {
 
   // Navegação com checagem de conexão para telas de jogo
   const handleNavClick = (path) => {
-    const requiresWallet = ["/game", "/multiplayer", "/multiplayer/game"];
+    const requiresWallet = ["/game"];
     if (requiresWallet.includes(path) && !isConnected) {
       // Abre menu da wallet para incentivar conexão
       setWalletMenuOpen(true);
@@ -74,7 +74,6 @@ const Header = () => {
   const routes = [
     { path: "/", label: "Home", icon: "🏠" },
     { path: "/game", label: "Solo", icon: "▶️" },
-    { path: "/multiplayer", label: "Multiplayer", icon: "👥" },
     { path: "/nft", label: "NFTs", icon: "💎" },
     { path: "/sobre", label: "Sobre", icon: "ℹ️" },
   ];
